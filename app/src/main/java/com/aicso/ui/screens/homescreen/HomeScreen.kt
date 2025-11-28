@@ -39,10 +39,10 @@ fun HomeScreen(navController: NavController) {
             .fillMaxSize()
             .background(Color.White)
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 40.dp)
+            .padding(horizontal = 20.dp)
     ) {
         // Status Bar Space
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(100.dp))
 
         // Header with Notification
         Row(
@@ -57,10 +57,10 @@ fun HomeScreen(navController: NavController) {
                 color = Color.Black
             )
 
-            NotificationButton(onClick = { /* Handle notification */ })
+//            NotificationButton(onClick = { /* Handle notification */ })
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(18.dp))
 
         // AI Assistant Banner
         AIAssistantBanner()
@@ -98,47 +98,47 @@ fun HomeScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(12.dp))
 
         SupportModeCard(
-            iconRes = android.R.drawable.ic_menu_camera, // Replace with your video icon
+            iconRes = android.R.drawable.ic_menu_camera,
             title = "Video Avatar",
             subtitle = "Face-to-face AI experience",
             onClick = { /* Navigate to video avatar */ }
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         // Security Footer
-//        SecurityFooter()
+        SecurityFooter()
 
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
-@Composable
-fun NotificationButton(onClick: () -> Unit) {
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier
-            .size(48.dp)
-            .background(
-                color = Color(0xFFFFE5E5),
-                shape = CircleShape
-            )
-    ) {
-        Icon(
-            painter = painterResource(id = android.R.drawable.ic_popup_reminder), // Replace with bell icon
-            contentDescription = "Notifications",
-            tint = Color(0xFFD32F2F),
-            modifier = Modifier.size(24.dp)
-        )
-    }
-}
+//@Composable
+//fun NotificationButton(onClick: () -> Unit) {
+//    IconButton(
+//        onClick = onClick,
+//        modifier = Modifier
+//            .size(48.dp)
+//            .background(
+//                color = Color(0xFFFFE5E5),
+//                shape = CircleShape
+//            )
+//    ) {
+//        Icon(
+//            painter = painterResource(id = android.R.drawable.ic_popup_reminder), // Replace with bell icon
+//            contentDescription = "Notifications",
+//            tint = Color(0xFFD32F2F),
+//            modifier = Modifier.size(24.dp)
+//        )
+//    }
+//}
 
 @Composable
 fun AIAssistantBanner() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp),
+            .height(160.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
@@ -162,7 +162,7 @@ fun AIAssistantBanner() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(id = android.R.drawable.ic_dialog_info),
+                        painter = painterResource(id = android.R.drawable.btn_star_big_on),
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier.size(20.dp)
@@ -223,7 +223,7 @@ fun SupportModeCard(
             // Icon Container
             Box(
                 modifier = Modifier
-                    .size(56.dp)
+                    .size(76.dp)
                     .background(
                         color = Color(0xFFFFE5E5),
                         shape = RoundedCornerShape(12.dp)
@@ -233,8 +233,8 @@ fun SupportModeCard(
                 Icon(
                     painter = painterResource(id = iconRes),
                     contentDescription = title,
-                    tint = Color(0xFFD32F2F),
-                    modifier = Modifier.size(28.dp)
+                    tint = Color(0xFF900404),
+                    modifier = Modifier.size(32.dp)
                 )
             }
 
@@ -268,29 +268,29 @@ fun SupportModeCard(
     }
 }
 
-//@Composable
-//fun SecurityFooter() {
-//    Row(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .background(
-//                color = Color(0xFFFFF5F5),
-//                shape = RoundedCornerShape(12.dp)
-//            )
-//            .padding(16.dp),
-//        verticalAlignment = Alignment.CenterVertically
-//    ) {
-//        Icon(
-//            painter = painterResource(id = android.R.drawable.ic_secure),
-//            contentDescription = "Security",
-//            tint = Color(0xFFD32F2F),
-//            modifier = Modifier.size(20.dp)
-//        )
-//        Text(
-//            text = " End-to-end encrypted • Your data is protected",
-//            fontSize = 13.sp,
-//            color = Color(0xFF666666),
-//            modifier = Modifier.padding(start = 4.dp)
-//        )
-//    }
-//}
+@Composable
+fun SecurityFooter() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = Color(0xFFFFF5F5),
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = android.R.drawable.ic_secure),
+            contentDescription = "Security",
+            tint = Color(0xFFD32F2F),
+            modifier = Modifier.size(20.dp)
+        )
+        Text(
+            text = " End-to-end encrypted • Your data is protected",
+            fontSize = 13.sp,
+            color = Color(0xFF666666),
+            modifier = Modifier.padding(start = 4.dp)
+        )
+    }
+}
