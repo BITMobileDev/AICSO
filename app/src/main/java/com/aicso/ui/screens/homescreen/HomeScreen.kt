@@ -31,6 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.aicso.component.LargeSpace
+import com.aicso.component.MediumSpace
+import com.aicso.component.SmallSpace
+import com.aicso.component.VerySmallSpace
 import com.aicso.ui.navigation.AicsoScreens
 
 @Composable
@@ -61,12 +65,12 @@ fun HomeScreen(navController: NavController) {
 //            NotificationButton(onClick = { /* Handle notification */ })
         }
 
-        Spacer(modifier = Modifier.height(18.dp))
+        MediumSpace()
 
         // AI Assistant Banner
         AIAssistantBanner()
 
-        Spacer(modifier = Modifier.height(32.dp))
+        LargeSpace()
 
         // Section Title
         Text(
@@ -77,26 +81,26 @@ fun HomeScreen(navController: NavController) {
             letterSpacing = 1.sp
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        SmallSpace()
 
         // Support Mode Cards
         SupportModeCard(
             iconRes = android.R.drawable.ic_dialog_email, // Replace with your chat icon
             title = "Chat Support",
             subtitle = "Text-based AI assistance",
-            onClick = { navController.navigate(AicsoScreens.ChatScreen) }
+            onClick = { /* Navigate to chat */ }
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        SmallSpace()
 
         SupportModeCard(
             iconRes = android.R.drawable.stat_sys_phone_call, // Replace with your phone icon
             title = "Voice Call",
             subtitle = "Speak with AI assistant",
-            onClick = { /* Navigate to voice call */ }
+            onClick = { navController.navigate(AicsoScreens.VoiceScreen) }
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+       SmallSpace()
 
         SupportModeCard(
             iconRes = android.R.drawable.ic_menu_camera,
@@ -105,12 +109,12 @@ fun HomeScreen(navController: NavController) {
             onClick = { /* Navigate to video avatar */ }
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
+        MediumSpace()
 
         // Security Footer
         SecurityFooter()
 
-        Spacer(modifier = Modifier.height(24.dp))
+      MediumSpace()
     }
 }
 
@@ -176,7 +180,7 @@ fun AIAssistantBanner() {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                VerySmallSpace()
 
                 Text(
                     text = "How can I help you today?",
@@ -185,7 +189,7 @@ fun AIAssistantBanner() {
                     color = Color.White
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                VerySmallSpace()
 
                 Text(
                     text = "Get instant support via chat, voice, or video call",

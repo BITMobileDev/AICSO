@@ -16,3 +16,4 @@ val lightPrimary = Color(0xFFA80000)
 val grayBlack = Color(0xFF444444)
 
 val lightHover = Color(0xFFF2D9D9)
+val lightAction = Color(0xFFF8F6F6)

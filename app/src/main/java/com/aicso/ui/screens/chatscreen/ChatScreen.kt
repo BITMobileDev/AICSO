@@ -45,6 +45,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aicso.ui.components.chatscreen.MessageInput
 import com.aicso.ui.components.chatscreen.MessagesList
+import com.aicso.ui.components.chatscreen.QuickActionBox
 import com.aicso.ui.components.chatscreen.TopBar
 
 
@@ -87,6 +88,8 @@ fun ChatScreen(navController: NavController, modifier: Modifier = Modifier, vm :
                 isLoading = isLoading,
                 modifier = Modifier.weight(1f)
             )
+
+            QuickActionBox(onActionClick = { /* Handle quick action click*/})
 
             // Message Input
             MessageInput(

@@ -18,5 +18,6 @@ fun AicsoNavigation(navController: NavHostController){
         composable<AicsoScreens.ChatScreen> {
             ChatScreen(navController = navController)
         }
+
     }
 }
