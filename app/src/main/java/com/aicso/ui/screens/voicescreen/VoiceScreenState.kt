@@ -12,5 +12,9 @@ sealed class VoiceScreenState {
         val isRecording: Boolean = true
     ) : VoiceScreenState()
 
+    data class EndedState(
+        val duration: String
+    ) : VoiceScreenState()
+
 }
 
