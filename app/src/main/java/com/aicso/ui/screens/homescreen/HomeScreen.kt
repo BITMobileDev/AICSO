@@ -88,7 +88,7 @@ fun HomeScreen(navController: NavController) {
             iconRes = android.R.drawable.ic_dialog_email, // Replace with your chat icon
             title = "Chat Support",
             subtitle = "Text-based AI assistance",
-            onClick = { /* Navigate to chat */ }
+            onClick = { navController.navigate(AicsoScreens.ChatScreen)}
         )
 
         SmallSpace()
