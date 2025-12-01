@@ -19,7 +19,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScaffoldDefaults.contentWindowInsets
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -43,10 +42,11 @@ import com.aicso.ui.theme.grayBlack
 import com.aicso.ui.theme.lightPrimary
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.aicso.ui.components.chatscreen.MessageInput
+import com.aicso.ui.components.chatscreen.ChatBottomAppBar
 import com.aicso.ui.components.chatscreen.MessagesList
 import com.aicso.ui.components.chatscreen.QuickActionBox
 import com.aicso.ui.components.chatscreen.TopBar
+import com.aicso.ui.theme.Dimens.dp1
 
 
 @Composable
@@ -66,10 +66,15 @@ fun ChatScreen(navController: NavController, modifier: Modifier = Modifier, vm :
                     iconDescription = "Back")
 
                 HorizontalDivider(
-                    thickness = 1.dp,
+                    thickness = dp1,
                     color = grayBlack
                 )
             }
+        },
+        bottomBar = {
+            ChatBottomAppBar( onSendMessage = { message ->
+                vm.sendMessage(message)
+            }, enabled = !isLoading)
         },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)  // Add this
 
@@ -92,11 +97,11 @@ fun ChatScreen(navController: NavController, modifier: Modifier = Modifier, vm :
             QuickActionBox(onActionClick = { /* Handle quick action click*/})
 
             // Message Input
-            MessageInput(
-                onSendMessage = { message ->
-                    vm.sendMessage(message) },
-                enabled = !isLoading
-            )
+//            MessageInput(
+//                onSendMessage = { message ->
+//                    vm.sendMessage(message) },
+//                enabled = !isLoading
+//            )
 
 
         }

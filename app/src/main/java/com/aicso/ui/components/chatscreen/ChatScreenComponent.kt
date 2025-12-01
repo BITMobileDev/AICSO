@@ -107,10 +107,10 @@ fun TopBar(
 ){
     TopAppBar(modifier = Modifier.height(120.dp),
         title = {
-            Row(modifier= Modifier.fillMaxWidth().padding(start = dp10,bottom = dp10, top = dp10),
+            Row(modifier= Modifier.fillMaxWidth().padding(start = dp10,bottom = dp10, top = dp16),
                 verticalAlignment = Alignment.CenterVertically){
                 Icon(painter = painterResource(icon), contentDescription = description,
-                    modifier.padding().size(56.dp), Color.Unspecified)
+                    modifier.size(56.dp), Color.Unspecified)
 
                 Spacer(modifier = modifier.width(dp14))
 
@@ -136,7 +136,7 @@ fun TopBar(
             }
         },
         navigationIcon = {
-            IconButton(onClick = onIconClick, modifier= Modifier.padding(start = dp30, top = dp10)
+            IconButton(onClick = onIconClick, modifier= Modifier.padding(start = dp16, top = dp16)
                 .background(color = containerColor,
                     shape = CircleShape).size(dp4766)) {
                 Icon(
@@ -227,104 +227,104 @@ fun TypingIndicator() {
 }
 
 
-@Composable
-fun MessageInput(
-    onSendMessage: (String) -> Unit,
-    enabled: Boolean,
-    modifier: Modifier = Modifier
-) {
-    var messageText by remember { mutableStateOf("") }
-
-    Surface(
-        color = Color.White,
-        shadowElevation = 8.dp,
-        modifier = modifier.fillMaxWidth(),
-        tonalElevation = 3.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-                .imePadding(),  // Add this for keyboard padding
-            verticalAlignment = Alignment.Bottom,  // Changed from CenterVertically
-            horizontalArrangement = Arrangement.spacedBy(dp8)
-        ) {
-            IconButton(
-                onClick = { /* Handle button click */ },
-                modifier = Modifier
-                    .size(dp50)
-                    .background(
-                        color = containerColor,
-                        shape = CircleShape
-                    )
-                    .border(
-                        width = dp2,
-                        color = primaryColor,
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.send_file),
-                    contentDescription = "Send File",
-                    modifier = Modifier.size(dp20),
-                    tint = primaryColor
-                )
-            }
-
-            OutlinedTextField(
-                value = messageText,
-                onValueChange = { messageText = it },
-                placeholder = { Text("Type a message...", fontSize = 16.sp)},
-                enabled = enabled,
-                modifier = Modifier.weight(1f),
-                shape = RoundedCornerShape(dp24),
-                minLines = 1,
-                maxLines = 4,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = containerColor,
-                    unfocusedContainerColor = containerColor,
-                    disabledContainerColor = containerColor,
-                    focusedBorderColor = primaryColor,
-                    unfocusedBorderColor = primaryColor
-                ),
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Sentences,
-                    imeAction = ImeAction.Send
-                ),
-                keyboardActions = KeyboardActions(
-                    onSend = {
-                        if (messageText.isNotBlank()) {
-                            onSendMessage(messageText.trim())
-                            messageText = ""
-                        }
-                    }
-                )
-            )
-
-            IconButton(
-                onClick = {
-                    if (messageText.isNotBlank()) {
-                        onSendMessage(messageText.trim())
-                        messageText = ""
-                    }
-                },
-                enabled = enabled && messageText.isNotBlank(),
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(
-                        color = if (messageText.isNotBlank()) lightPrimary else containerColor,
-                        shape = RoundedCornerShape(50)
-                    )
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Send,
-                    contentDescription = "Send",
-                    tint = Color.White
-                )
-            }
-        }
-    }
-}
+//@Composable
+//fun MessageInput(
+//    onSendMessage: (String) -> Unit,
+//    enabled: Boolean,
+//    modifier: Modifier = Modifier
+//) {
+//    var messageText by remember { mutableStateOf("") }
+//
+//    Surface(
+//        color = Color.White,
+//        shadowElevation = 8.dp,
+//        modifier = modifier.fillMaxWidth(),
+//        tonalElevation = 3.dp
+//    ) {
+//        Row(
+//            modifier = Modifier
+//                .padding(16.dp)
+//                .fillMaxWidth()
+//                .imePadding(),  // Add this for keyboard padding
+//            verticalAlignment = Alignment.Bottom,  // Changed from CenterVertically
+//            horizontalArrangement = Arrangement.spacedBy(dp8)
+//        ) {
+//            IconButton(
+//                onClick = { /* Handle button click */ },
+//                modifier = Modifier
+//                    .size(dp50)
+//                    .background(
+//                        color = containerColor,
+//                        shape = CircleShape
+//                    )
+//                    .border(
+//                        width = dp2,
+//                        color = primaryColor,
+//                        shape = CircleShape
+//                    )
+//            ) {
+//                Icon(
+//                    painter = painterResource(R.drawable.send_file),
+//                    contentDescription = "Send File",
+//                    modifier = Modifier.size(dp20),
+//                    tint = primaryColor
+//                )
+//            }
+//
+//            OutlinedTextField(
+//                value = messageText,
+//                onValueChange = { messageText = it },
+//                placeholder = { Text("Type a message...", fontSize = 16.sp)},
+//                enabled = enabled,
+//                modifier = Modifier.weight(1f),
+//                shape = RoundedCornerShape(dp24),
+//                minLines = 1,
+//                maxLines = 4,
+//                colors = OutlinedTextFieldDefaults.colors(
+//                    focusedContainerColor = containerColor,
+//                    unfocusedContainerColor = containerColor,
+//                    disabledContainerColor = containerColor,
+//                    focusedBorderColor = primaryColor,
+//                    unfocusedBorderColor = primaryColor
+//                ),
+//                keyboardOptions = KeyboardOptions(
+//                    capitalization = KeyboardCapitalization.Sentences,
+//                    imeAction = ImeAction.Send
+//                ),
+//                keyboardActions = KeyboardActions(
+//                    onSend = {
+//                        if (messageText.isNotBlank()) {
+//                            onSendMessage(messageText.trim())
+//                            messageText = ""
+//                        }
+//                    }
+//                )
+//            )
+//
+//            IconButton(
+//                onClick = {
+//                    if (messageText.isNotBlank()) {
+//                        onSendMessage(messageText.trim())
+//                        messageText = ""
+//                    }
+//                },
+//                enabled = enabled && messageText.isNotBlank(),
+//                modifier = Modifier
+//                    .size(48.dp)
+//                    .background(
+//                        color = if (messageText.isNotBlank()) lightPrimary else containerColor,
+//                        shape = RoundedCornerShape(50)
+//                    )
+//            ) {
+//                Icon(
+//                    imageVector = Icons.AutoMirrored.Filled.Send,
+//                    contentDescription = "Send",
+//                    tint = Color.White
+//                )
+//            }
+//        }
+//    }
+//}
 
 
 
@@ -345,7 +345,7 @@ fun MessageBubble(message: Message) {
     ) {
         Row(
             modifier = Modifier.padding(vertical = dp4, horizontal = dp16),
-            horizontalArrangement = Arrangement.spacedBy(dp16),
+            horizontalArrangement = Arrangement.spacedBy(dp8),
             verticalAlignment = Alignment.Top
         ) {
             // Bot icon on left with circular container
@@ -357,7 +357,7 @@ fun MessageBubble(message: Message) {
                             color = primaryColor,
                             shape = CircleShape
                         )
-                        .padding(dp8),
+                        .padding(dp4),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(

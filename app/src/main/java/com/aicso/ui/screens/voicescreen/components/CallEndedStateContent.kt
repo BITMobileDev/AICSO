@@ -17,6 +17,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aicso.R
+import com.aicso.component.MediumSpace
+import com.aicso.ui.theme.Dimens.dp8
 
 @Composable
 fun CallEndedStateContent(
@@ -75,7 +77,7 @@ fun CallEndedStateContent(
                 color = Color.Gray
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            MediumSpace()
 
             Button(
                 onClick = onStartNewCall,
@@ -83,7 +85,7 @@ fun CallEndedStateContent(
                     containerColor = Color(0xFFE0E0E0)
                 ),
                 shape = RoundedCornerShape(24.dp),
-                modifier = Modifier.padding(horizontal = 32.dp)
+                modifier = Modifier.padding(top = dp8)
             ) {
                 Text(
                     text = "Start New Call",

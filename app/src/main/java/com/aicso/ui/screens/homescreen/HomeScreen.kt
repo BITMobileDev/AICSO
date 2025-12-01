@@ -106,7 +106,7 @@ fun HomeScreen(navController: NavController) {
             iconRes = android.R.drawable.ic_menu_camera,
             title = "Video Avatar",
             subtitle = "Face-to-face AI experience",
-            onClick = { /* Navigate to video avatar */ }
+            onClick = { navController.navigate(AicsoScreens.VideoScreen) }
         )
 
         MediumSpace()

@@ -42,7 +42,7 @@ fun VoiceScreen(
             contentAlignment = Alignment.Center
         ) {
             AnimatedContent(
-                targetState = uiState,
+                targetState = uiState::class,
                 transitionSpec = {
                     fadeIn(animationSpec = tween(300)) with
                             fadeOut(animationSpec = tween(300))
