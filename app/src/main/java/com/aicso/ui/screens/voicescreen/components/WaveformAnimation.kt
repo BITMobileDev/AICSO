@@ -8,13 +8,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.aicso.ui.theme.Dimens.dp3
+import com.aicso.ui.theme.Dimens.dp4
+import com.aicso.ui.theme.Dimens.dp40
 
 @Composable
 fun WaveformAnimation() {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(dp4),
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.height(40.dp)
+        modifier = Modifier.height(dp40)
     ) {
         val infiniteTransition = rememberInfiniteTransition(label = "waveform")
 
@@ -27,14 +30,14 @@ fun WaveformAnimation() {
                         durationMillis = 800,
                         delayMillis = i * 100
                     ),
-                    repeatMode = RepeatMode.Reverse
+                    repeatMode = RepeatMode.Restart
                 ),
                 label = "wave$i"
             )
 
             Box(
                 modifier = Modifier
-                    .width(3.dp)
+                    .width(dp3)
                     .height(height.dp)
                     .background(Color(0xFFE53935))
             )

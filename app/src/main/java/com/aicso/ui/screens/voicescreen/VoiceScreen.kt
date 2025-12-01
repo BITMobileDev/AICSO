@@ -13,13 +13,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.aicso.ui.navigation.AicsoScreens
 import com.aicso.ui.screens.voicescreen.components.*
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun VoiceScreen(
     navController: NavController,
-    onBackPressed: () -> Unit = {},
+//    onBackPressed: () -> Unit = {},
     viewModel: VoiceScreenViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -27,7 +28,9 @@ fun VoiceScreen(
     Scaffold(
         topBar = {
             if (uiState !is VoiceScreenState.EndedState) {
-                VoiceScreenTopBar(onBackPressed = onBackPressed)
+                VoiceScreenTopBar(onBackPressed = {
+                    navController.navigate(AicsoScreens.HomeScreen)
+                })
             }
         }
     ) { paddingValues ->
@@ -42,14 +45,14 @@ fun VoiceScreen(
             contentAlignment = Alignment.Center
         ) {
             AnimatedContent(
-                targetState = uiState,
+                targetState = uiState::class, // Only animate on state type change
                 transitionSpec = {
                     fadeIn(animationSpec = tween(300)) with
                             fadeOut(animationSpec = tween(300))
                 },
                 label = "Voice Screen State"
             ) { state ->
-                when (state) {
+                when (val state = uiState) {
                     is VoiceScreenState.DefaultState -> {
                         ReadyStateContent(
                             onStartCall = { viewModel.startVoiceSupport() }

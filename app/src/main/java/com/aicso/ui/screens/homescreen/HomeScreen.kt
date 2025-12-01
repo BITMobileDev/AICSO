@@ -12,30 +12,37 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.aicso.component.LargeSpace
+import com.aicso.R
 import com.aicso.component.MediumSpace
 import com.aicso.component.SmallSpace
 import com.aicso.component.VerySmallSpace
 import com.aicso.ui.navigation.AicsoScreens
+import com.aicso.ui.theme.Dimens.dp100
+import com.aicso.ui.theme.Dimens.dp160
+import com.aicso.ui.theme.Dimens.dp20
+import com.aicso.ui.theme.Dimens.dp28
+import com.aicso.ui.theme.Dimens.sp14
+import com.aicso.ui.theme.Dimens.sp16
+import com.aicso.ui.theme.Dimens.sp18
+import com.aicso.ui.theme.Dimens.sp2
+import com.aicso.ui.theme.Dimens.sp22
+import com.aicso.ui.theme.Dimens.sp28
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -47,7 +54,7 @@ fun HomeScreen(navController: NavController) {
             .padding(horizontal = 20.dp)
     ) {
         // Status Bar Space
-        Spacer(modifier = Modifier.height(100.dp))
+        Spacer(modifier = Modifier.height(dp100))
 
         // Header with Notification
         Row(
@@ -57,12 +64,11 @@ fun HomeScreen(navController: NavController) {
         ) {
             Text(
                 text = "Hello, Boluwatife",
-                fontSize = 28.sp,
+                fontSize = sp28,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
 
-//            NotificationButton(onClick = { /* Handle notification */ })
         }
 
         MediumSpace()
@@ -70,22 +76,22 @@ fun HomeScreen(navController: NavController) {
         // AI Assistant Banner
         AIAssistantBanner()
 
-        LargeSpace()
+        SmallSpace()
 
         // Section Title
         Text(
             text = "CHOOSE SUPPORT MODE",
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold,
+            fontSize = sp16,
+            fontWeight = FontWeight.Medium,
             color = Color.Gray,
-            letterSpacing = 1.sp
+            letterSpacing = sp2
         )
 
         SmallSpace()
 
         // Support Mode Cards
         SupportModeCard(
-            iconRes = android.R.drawable.ic_dialog_email, // Replace with your chat icon
+            iconRes = R.drawable.chat,
             title = "Chat Support",
             subtitle = "Text-based AI assistance",
             onClick = { navController.navigate(AicsoScreens.ChatScreen)}
@@ -94,7 +100,7 @@ fun HomeScreen(navController: NavController) {
         SmallSpace()
 
         SupportModeCard(
-            iconRes = android.R.drawable.stat_sys_phone_call, // Replace with your phone icon
+            iconRes = R.drawable.voice_call,
             title = "Voice Call",
             subtitle = "Speak with AI assistant",
             onClick = { navController.navigate(AicsoScreens.VoiceScreen) }
@@ -102,8 +108,10 @@ fun HomeScreen(navController: NavController) {
 
        SmallSpace()
 
+//        painter = painterResource(id = R.drawable.dashboard)
+
         SupportModeCard(
-            iconRes = android.R.drawable.ic_menu_camera,
+            iconRes = R.drawable.showvideo_icon,
             title = "Video Avatar",
             subtitle = "Face-to-face AI experience",
             onClick = { /* Navigate to video avatar */ }
@@ -118,33 +126,14 @@ fun HomeScreen(navController: NavController) {
     }
 }
 
-//@Composable
-//fun NotificationButton(onClick: () -> Unit) {
-//    IconButton(
-//        onClick = onClick,
-//        modifier = Modifier
-//            .size(48.dp)
-//            .background(
-//                color = Color(0xFFFFE5E5),
-//                shape = CircleShape
-//            )
-//    ) {
-//        Icon(
-//            painter = painterResource(id = android.R.drawable.ic_popup_reminder), // Replace with bell icon
-//            contentDescription = "Notifications",
-//            tint = Color(0xFFD32F2F),
-//            modifier = Modifier.size(24.dp)
-//        )
-//    }
-//}
 
 @Composable
 fun AIAssistantBanner() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp),
-        shape = RoundedCornerShape(20.dp),
+            .height(dp160),
+        shape = RoundedCornerShape(dp20),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         )
@@ -160,21 +149,21 @@ fun AIAssistantBanner() {
                         )
                     )
                 )
-                .padding(20.dp)
+                .padding(dp20)
         ) {
             Column {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(id = android.R.drawable.btn_star_big_on),
-                        contentDescription = null,
+                        painter = painterResource(id = R.drawable.dashboard),
+                        contentDescription = " Ai Assistant ",
                         tint = Color.White,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(dp28)
                     )
                     Text(
                         text = " AI-CSO Assistant",
-                        fontSize = 14.sp,
+                        fontSize = sp14,
                         fontWeight = FontWeight.Medium,
                         color = Color.White
                     )
@@ -184,7 +173,7 @@ fun AIAssistantBanner() {
 
                 Text(
                     text = "How can I help you today?",
-                    fontSize = 22.sp,
+                    fontSize = sp22,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
@@ -193,7 +182,7 @@ fun AIAssistantBanner() {
 
                 Text(
                     text = "Get instant support via chat, voice, or video call",
-                    fontSize = 14.sp,
+                    fontSize = sp18,
                     color = Color.White.copy(alpha = 0.9f)
                 )
             }
@@ -286,7 +275,7 @@ fun SecurityFooter() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            painter = painterResource(id = android.R.drawable.ic_secure),
+            painter = painterResource(id = R.drawable.endtoend),
             contentDescription = "Security",
             tint = Color(0xFFD32F2F),
             modifier = Modifier.size(20.dp)

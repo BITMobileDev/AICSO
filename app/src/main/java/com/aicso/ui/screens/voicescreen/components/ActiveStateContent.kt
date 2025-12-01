@@ -16,6 +16,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aicso.R
+import com.aicso.component.VeryLargeSpace
+import com.aicso.ui.theme.Dimens.dp12
+import com.aicso.ui.theme.Dimens.dp16
+import com.aicso.ui.theme.Dimens.dp207
+import com.aicso.ui.theme.Dimens.dp24
+import com.aicso.ui.theme.Dimens.dp4
+import com.aicso.ui.theme.Dimens.dp6
+import com.aicso.ui.theme.Dimens.sp14
+import com.aicso.ui.theme.Dimens.sp20
+import com.aicso.ui.theme.Dimens.sp64
 
 @Composable
 fun ActiveStateContent(
@@ -27,16 +37,16 @@ fun ActiveStateContent(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        verticalArrangement = Arrangement.spacedBy(dp24)
     ) {
         Box(
-            modifier = Modifier.size(200.dp),
+            modifier = Modifier.size(dp207),
             contentAlignment = Alignment.Center
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .border(3.dp, Color(0xFF8B1A1A), CircleShape)
+                    .border(dp6, Color(0xFF8B1A1A), CircleShape)
                     .clip(CircleShape)
                     .background(Color(0xFFE57373)),
                 contentAlignment = Alignment.Center
@@ -44,7 +54,7 @@ fun ActiveStateContent(
                 Text(
                     text = "AI",
                     color = Color.White,
-                    fontSize = 64.sp,
+                    fontSize = sp64,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -52,15 +62,15 @@ fun ActiveStateContent(
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .offset(y = 12.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .offset(y = dp12)
+                    .clip(RoundedCornerShape(dp12))
                     .background(Color(0xFF8B1A1A))
-                    .padding(horizontal = 16.dp, vertical = 4.dp)
+                    .padding(horizontal = dp16, vertical = dp4)
             ) {
                 Text(
                     text = "Live",
                     color = Color.White,
-                    fontSize = 14.sp,
+                    fontSize = sp14,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -68,20 +78,20 @@ fun ActiveStateContent(
 
         Text(
             text = "AI - CSO Voice",
-            fontSize = 20.sp,
+            fontSize = sp20,
             fontWeight = FontWeight.Medium,
             color = Color.Black
         )
 
         Text(
             text = duration,
-            fontSize = 14.sp,
+            fontSize = sp14,
             color = Color.Gray
         )
 
         WaveformAnimation()
 
-        Spacer(modifier = Modifier.height(16.dp))
+        VeryLargeSpace()
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(48.dp),

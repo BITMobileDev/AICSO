@@ -11,6 +11,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aicso.ui.theme.Dimens.dp10
+import com.aicso.ui.theme.Dimens.sp16
+import com.aicso.ui.theme.Dimens.sp18
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,19 +25,19 @@ fun VoiceScreenTopBar(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp),
+                    .padding(top = dp10),
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
                     text = "Voice Support",
-                    fontSize = 18.sp,
+                    fontSize = sp18,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Left,
                     color = Color.Black,
                 )
                 Text(
                     text = "Speak naturally with AI",
-                    fontSize = 16.sp,
+                    fontSize = sp16,
                     textAlign = TextAlign.Left,
                     color = Color.Gray
                 )

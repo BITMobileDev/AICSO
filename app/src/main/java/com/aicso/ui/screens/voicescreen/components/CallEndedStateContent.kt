@@ -17,6 +17,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aicso.R
+import com.aicso.component.VerySmallSpace
+import com.aicso.ui.theme.Dimens.dp120
+import com.aicso.ui.theme.Dimens.dp16
+import com.aicso.ui.theme.Dimens.dp24
+import com.aicso.ui.theme.Dimens.dp32
+import com.aicso.ui.theme.Dimens.dp36
+import com.aicso.ui.theme.Dimens.dp4
+import com.aicso.ui.theme.Dimens.dp40
+import com.aicso.ui.theme.Dimens.dp60
+import com.aicso.ui.theme.Dimens.dp80
+import com.aicso.ui.theme.Dimens.sp16
+import com.aicso.ui.theme.Dimens.sp28
 
 @Composable
 fun CallEndedStateContent(
@@ -32,24 +44,24 @@ fun CallEndedStateContent(
             onClick = onClose,
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(32.dp)
+                .padding(dp32)
         ) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = "Close",
                 tint = Color.Black,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(dp36)
             )
         }
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-            modifier = Modifier.padding(32.dp)
+            verticalArrangement = Arrangement.spacedBy(dp24),
+            modifier = Modifier.padding(dp32)
         ) {
             Box(
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(dp80)
                     .clip(CircleShape)
                     .background(Color(0xFF9E9E9E)),
                 contentAlignment = Alignment.Center
@@ -58,38 +70,38 @@ fun CallEndedStateContent(
                     painter = painterResource(id = R.drawable.endvoicecall),
                     contentDescription = "Call Ended",
                     tint = Color.White,
-                    modifier = Modifier.size(60.dp)
+                    modifier = Modifier.size(dp40)
                 )
             }
 
             Text(
                 text = "Call Ended",
-                fontSize = 28.sp,
+                fontSize = sp28,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF424242)
             )
 
             Text(
                 text = "Duration: $duration",
-                fontSize = 16.sp,
+                fontSize =  sp16,
                 color = Color.Gray
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            VerySmallSpace()
 
             Button(
                 onClick = onStartNewCall,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFE0E0E0)
                 ),
-                shape = RoundedCornerShape(24.dp),
-                modifier = Modifier.padding(horizontal = 32.dp)
+                shape = RoundedCornerShape(dp24),
+                modifier = Modifier.padding(horizontal = dp32)
             ) {
                 Text(
                     text = "Start New Call",
                     color = Color(0xFF424242),
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                    fontSize = sp16,
+                    modifier = Modifier.padding(horizontal = dp16, vertical = dp4)
                 )
             }
         }
