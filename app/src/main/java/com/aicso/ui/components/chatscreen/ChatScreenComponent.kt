@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -33,6 +34,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -61,6 +64,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aicso.R
+import com.aicso.ui.screens.chatscreen.ChatViewModel
 import com.aicso.ui.screens.chatscreen.Message
 import com.aicso.ui.theme.Dimens.dp10
 import com.aicso.ui.theme.Dimens.dp12
@@ -74,11 +78,13 @@ import com.aicso.ui.theme.Dimens.dp25
 import com.aicso.ui.theme.Dimens.dp30
 import com.aicso.ui.theme.Dimens.dp32
 import com.aicso.ui.theme.Dimens.dp4
+import com.aicso.ui.theme.Dimens.dp40
 import com.aicso.ui.theme.Dimens.dp4766
 import com.aicso.ui.theme.Dimens.dp50
 import com.aicso.ui.theme.Dimens.dp8
 import com.aicso.ui.theme.containerColor
 import com.aicso.ui.theme.grayBlack
+import com.aicso.ui.theme.lightAction
 import com.aicso.ui.theme.lightHover
 import com.aicso.ui.theme.lightPrimary
 import com.aicso.ui.theme.primaryColor
@@ -101,10 +107,10 @@ fun TopBar(
 ){
     TopAppBar(modifier = Modifier.height(120.dp),
         title = {
-            Row(modifier= Modifier.fillMaxWidth().padding(start = dp10,bottom = dp10, top = dp10),
+            Row(modifier= Modifier.fillMaxWidth().padding(start = dp10,bottom = dp10, top = dp16),
                 verticalAlignment = Alignment.CenterVertically){
                 Icon(painter = painterResource(icon), contentDescription = description,
-                    modifier.padding().size(56.dp), Color.Unspecified)
+                    modifier.size(56.dp), Color.Unspecified)
 
                 Spacer(modifier = modifier.width(dp14))
 
@@ -126,13 +132,11 @@ fun TopBar(
                             color = grayBlack
                         )
                     }
-
-
                 }
             }
         },
         navigationIcon = {
-            IconButton(onClick = onIconClick, modifier= Modifier.padding(start = dp30, top = dp10)
+            IconButton(onClick = onIconClick, modifier= Modifier.padding(start = dp16, top = dp16)
                 .background(color = containerColor,
                     shape = CircleShape).size(dp4766)) {
                 Icon(
@@ -192,7 +196,7 @@ fun TypingIndicator() {
     Row(
         modifier = Modifier
             .background(
-                color = Color.White,
+                color = containerColor,
                 shape = RoundedCornerShape(16.dp)
             )
             .padding(16.dp),
@@ -214,7 +218,7 @@ fun TypingIndicator() {
                 modifier = Modifier
                     .size(8.dp)
                     .background(
-                        color = Color.Gray.copy(alpha = alpha),
+                        color = primaryColor.copy(alpha = alpha),
                         shape = RoundedCornerShape(50)
                     )
             )
@@ -223,104 +227,104 @@ fun TypingIndicator() {
 }
 
 
-@Composable
-fun MessageInput(
-    onSendMessage: (String) -> Unit,
-    enabled: Boolean,
-    modifier: Modifier = Modifier
-) {
-    var messageText by remember { mutableStateOf("") }
-
-    Surface(
-        color = Color.White,
-        shadowElevation = 8.dp,
-        modifier = modifier.fillMaxWidth(),
-        tonalElevation = 3.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-                .imePadding(),  // Add this for keyboard padding
-            verticalAlignment = Alignment.Bottom,  // Changed from CenterVertically
-            horizontalArrangement = Arrangement.spacedBy(dp8)
-        ) {
-            IconButton(
-                onClick = { /* Handle button click */ },
-                modifier = Modifier
-                    .size(dp50)
-                    .background(
-                        color = containerColor,
-                        shape = CircleShape
-                    )
-                    .border(
-                        width = dp2,
-                        color = primaryColor,
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.send_file),
-                    contentDescription = "Send File",
-                    modifier = Modifier.size(dp20),
-                    tint = primaryColor
-                )
-            }
-
-            OutlinedTextField(
-                value = messageText,
-                onValueChange = { messageText = it },
-                placeholder = { Text("Type a message...", fontSize = 16.sp) },
-                enabled = enabled,
-                modifier = Modifier.weight(1f),
-                shape = RoundedCornerShape(dp24),
-                minLines = 1,  // Add this
-                maxLines = 4,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = containerColor,
-                    unfocusedContainerColor = containerColor,
-                    disabledContainerColor = containerColor,
-                    focusedBorderColor = primaryColor,
-                    unfocusedBorderColor = primaryColor
-                ),
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Sentences,
-                    imeAction = ImeAction.Send
-                ),
-                keyboardActions = KeyboardActions(
-                    onSend = {
-                        if (messageText.isNotBlank()) {
-                            onSendMessage(messageText.trim())
-                            messageText = ""
-                        }
-                    }
-                )
-            )
-
-            IconButton(
-                onClick = {
-                    if (messageText.isNotBlank()) {
-                        onSendMessage(messageText.trim())
-                        messageText = ""
-                    }
-                },
-                enabled = enabled && messageText.isNotBlank(),
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(
-                        color = if (messageText.isNotBlank()) lightPrimary else containerColor,
-                        shape = RoundedCornerShape(50)
-                    )
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Send,
-                    contentDescription = "Send",
-                    tint = Color.White
-                )
-            }
-        }
-    }
-}
+//@Composable
+//fun MessageInput(
+//    onSendMessage: (String) -> Unit,
+//    enabled: Boolean,
+//    modifier: Modifier = Modifier
+//) {
+//    var messageText by remember { mutableStateOf("") }
+//
+//    Surface(
+//        color = Color.White,
+//        shadowElevation = 8.dp,
+//        modifier = modifier.fillMaxWidth(),
+//        tonalElevation = 3.dp
+//    ) {
+//        Row(
+//            modifier = Modifier
+//                .padding(16.dp)
+//                .fillMaxWidth()
+//                .imePadding(),  // Add this for keyboard padding
+//            verticalAlignment = Alignment.Bottom,  // Changed from CenterVertically
+//            horizontalArrangement = Arrangement.spacedBy(dp8)
+//        ) {
+//            IconButton(
+//                onClick = { /* Handle button click */ },
+//                modifier = Modifier
+//                    .size(dp50)
+//                    .background(
+//                        color = containerColor,
+//                        shape = CircleShape
+//                    )
+//                    .border(
+//                        width = dp2,
+//                        color = primaryColor,
+//                        shape = CircleShape
+//                    )
+//            ) {
+//                Icon(
+//                    painter = painterResource(R.drawable.send_file),
+//                    contentDescription = "Send File",
+//                    modifier = Modifier.size(dp20),
+//                    tint = primaryColor
+//                )
+//            }
+//
+//            OutlinedTextField(
+//                value = messageText,
+//                onValueChange = { messageText = it },
+//                placeholder = { Text("Type a message...", fontSize = 16.sp)},
+//                enabled = enabled,
+//                modifier = Modifier.weight(1f),
+//                shape = RoundedCornerShape(dp24),
+//                minLines = 1,
+//                maxLines = 4,
+//                colors = OutlinedTextFieldDefaults.colors(
+//                    focusedContainerColor = containerColor,
+//                    unfocusedContainerColor = containerColor,
+//                    disabledContainerColor = containerColor,
+//                    focusedBorderColor = primaryColor,
+//                    unfocusedBorderColor = primaryColor
+//                ),
+//                keyboardOptions = KeyboardOptions(
+//                    capitalization = KeyboardCapitalization.Sentences,
+//                    imeAction = ImeAction.Send
+//                ),
+//                keyboardActions = KeyboardActions(
+//                    onSend = {
+//                        if (messageText.isNotBlank()) {
+//                            onSendMessage(messageText.trim())
+//                            messageText = ""
+//                        }
+//                    }
+//                )
+//            )
+//
+//            IconButton(
+//                onClick = {
+//                    if (messageText.isNotBlank()) {
+//                        onSendMessage(messageText.trim())
+//                        messageText = ""
+//                    }
+//                },
+//                enabled = enabled && messageText.isNotBlank(),
+//                modifier = Modifier
+//                    .size(48.dp)
+//                    .background(
+//                        color = if (messageText.isNotBlank()) lightPrimary else containerColor,
+//                        shape = RoundedCornerShape(50)
+//                    )
+//            ) {
+//                Icon(
+//                    imageVector = Icons.AutoMirrored.Filled.Send,
+//                    contentDescription = "Send",
+//                    tint = Color.White
+//                )
+//            }
+//        }
+//    }
+//}
 
 
 
@@ -333,7 +337,7 @@ fun MessageBubble(message: Message) {
         containerColor
     }
     val textColor = Color.Black
-    val maxWidth = if (message.isFromUser) 180.dp else 250.dp  // User: 200dp, Bot: 300dp
+    val maxWidth = if (message.isFromUser) 180.dp else 250.dp  // User: 180dp, Bot: 250dp
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -341,7 +345,7 @@ fun MessageBubble(message: Message) {
     ) {
         Row(
             modifier = Modifier.padding(vertical = dp4, horizontal = dp16),
-            horizontalArrangement = Arrangement.spacedBy(dp16),
+            horizontalArrangement = Arrangement.spacedBy(dp8),
             verticalAlignment = Alignment.Top
         ) {
             // Bot icon on left with circular container
@@ -353,7 +357,7 @@ fun MessageBubble(message: Message) {
                             color = primaryColor,
                             shape = CircleShape
                         )
-                        .padding(dp8),
+                        .padding(dp4),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
@@ -374,7 +378,9 @@ fun MessageBubble(message: Message) {
                         bottomEnd = if (message.isFromUser) dp4 else dp16
                     ),
                     shadowElevation = 1.dp,
-                    modifier = Modifier.widthIn(max = maxWidth)  // Uses different max widths
+                    modifier = Modifier.widthIn(max = 250.dp)
+
+//                    modifier = Modifier.widthIn(max = maxWidth)  // Uses different max widths
                 ) {
                     Text(
                         text = message.text,
@@ -393,6 +399,11 @@ fun MessageBubble(message: Message) {
                     color = Color.Gray,
                     modifier = Modifier.padding(horizontal = dp8, vertical = dp2)
                 )
+            }
+
+            // Spacer to push content
+            if (!message.isFromUser) {
+                Spacer(modifier = Modifier.width(42.dp))
             }
 
             if (message.isFromUser) {
@@ -415,3 +426,76 @@ fun formatTimestamp(timestamp: Long): String {
     val sdf = SimpleDateFormat("HH:mm a", Locale.getDefault())
     return sdf.format(Date(timestamp))
 }
+
+
+@Composable
+fun QuickActionBox(
+    onActionClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth(),
+        color = lightAction,
+        shadowElevation = 2.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = "Quick Actions",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                QuickActionButton(
+                    text = "Check Balance",
+                    onClick = { onActionClick("I need help") },
+                    modifier = Modifier.weight(1f)
+                )
+
+                QuickActionButton(
+                    text = "Reset Pin",
+                    onClick = { onActionClick("I want to reset my pin") },
+                    modifier = Modifier.weight(1f)
+                )
+
+                QuickActionButton(
+                    text = "Get Loan",
+                    onClick = { onActionClick("How can I get a loan?") },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun QuickActionButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(dp40),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+            contentColor = Color.Black
+        ),
+        shape = RoundedCornerShape(dp16)
+    ) {
+        Text(
+            text = text,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+

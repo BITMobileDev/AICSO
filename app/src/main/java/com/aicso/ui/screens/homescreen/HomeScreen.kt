@@ -114,7 +114,7 @@ fun HomeScreen(navController: NavController) {
             iconRes = R.drawable.showvideo_icon,
             title = "Video Avatar",
             subtitle = "Face-to-face AI experience",
-            onClick = { /* Navigate to video avatar */ }
+            onClick = { navController.navigate(AicsoScreens.VideoScreen) }
         )
 
         MediumSpace()

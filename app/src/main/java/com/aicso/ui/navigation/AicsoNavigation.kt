@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.aicso.ui.screens.chatscreen.ChatScreen
 import com.aicso.ui.screens.homescreen.HomeScreen
+import com.aicso.ui.screens.videoscreen.VideoScreen
 import com.aicso.ui.screens.voicescreen.VoiceScreen
 
 @Composable
@@ -23,7 +24,10 @@ fun AicsoNavigation(navController: NavHostController){
 
         composable <AicsoScreens.ChatScreen>{
             ChatScreen(navController = navController)
+        }
 
+        composable<AicsoScreens.VideoScreen> {
+            VideoScreen(navController = navController)
         }
     }
 }

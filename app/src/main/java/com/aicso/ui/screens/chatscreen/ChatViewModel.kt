@@ -60,7 +60,7 @@ class ChatViewModel : ViewModel() {
                 userMessage.contains("thanks", ignoreCase = true) ->
                     "You're welcome! Is there anything else I can help you with?"
                 else ->
-                    "I understand you said: \"$userMessage\". How can I help you with that?"
+                    "Thank you for asking about \"$userMessage\". Let me look into this for you."
             }
         }
 

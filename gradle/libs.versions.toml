@@ -37,7 +37,6 @@ serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization
 splashScreen = {group = 'androidx.core', name="core-splashscreen", version.ref = "splashScreen"  }
 androidx-compose-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
 
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

@@ -64,6 +64,4 @@ dependencies {
     implementation(libs.splashScreen)
     implementation(libs.androidx.compose.foundation.layout)
 
-
-
 }
