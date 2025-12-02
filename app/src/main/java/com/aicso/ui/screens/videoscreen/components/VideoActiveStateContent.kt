@@ -83,29 +83,7 @@ fun VideoActiveStateContent(isVideoOff : Boolean = false,
                 .offset(y= dp80),
                 horizontalArrangement = Arrangement.spacedBy(dp4))
             {
-                val infiniteTransition = rememberInfiniteTransition(label = "waveform")
-
-                for(i in 0..6){
-                    val height by infiniteTransition.animateFloat(
-                        initialValue = 10f,
-                        targetValue = 30f,
-                        animationSpec = infiniteRepeatable(
-                            animation = tween(
-                                durationMillis = 800,
-                                delayMillis = i * 100
-                            ),
-                            repeatMode = RepeatMode.Restart
-                        ),
-                        label = "wave$i"
-                    )
-
-                    Box(modifier = Modifier
-                        .width(dp4)
-                        .height(height.dp)
-                        .background(color = Color.White,
-                            shape = RoundedCornerShape(dp2))
-                    )
-                }
+                VideoWaveAnimation()
 
             }
 
