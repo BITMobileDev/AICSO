@@ -19,6 +19,7 @@ object Dimens  {
     val sp24 : TextUnit = 24.sp
     val sp26 : TextUnit = 26.sp
     val sp28 : TextUnit = 28.sp
+    val sp36 : TextUnit = 36.sp
 
     val sp64 : TextUnit = 64.sp
 
@@ -42,8 +43,10 @@ object Dimens  {
     val dp28 : Dp = 28.dp
     val dp30 : Dp = 30.dp
     val dp32 : Dp = 32.dp
+    val dp35 : Dp = 35.dp
     val dp36 : Dp = 36.dp
     val dp40 : Dp = 40.dp
+    val dp44 : Dp = 44.dp
     val dp4766 : Dp = 47.66.dp
     val dp48 : Dp = 48.dp
 

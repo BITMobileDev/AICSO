@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -42,6 +44,12 @@ fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = viewMo
     // Determine if it's the end call screen
     val isEndCall = uiState is VideoScreenState.EndedState
 
+    // Extract mute and video states from ActiveState
+    val isMuted = (uiState as? VideoScreenState.ActiveState)?.isMuted ?: false
+    val isVideoOff = (uiState as? VideoScreenState.ActiveState)?.isVideoOff ?: false
+//    val= (uiState as? VideoScreenState.ActiveState)?.isRecording == false
+
+
     Scaffold(
         topBar = {
             VideoScreenTopAppBar(onIconClick = {navController.popBackStack()},
@@ -58,6 +66,15 @@ fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = viewMo
                     fadeIn(animationSpec = tween(300)) with
                             fadeOut(animationSpec = tween(300))
                 },
+                contentKey = { state ->
+                    // Use state type as key, not the actual state object
+                    when (state) {
+                        VideoScreenState.DefaultState -> "default"
+                        VideoScreenState.ConnectingState -> "connecting"
+                        is VideoScreenState.ActiveState -> "active"  // Same key for all ActiveState updates
+                        is VideoScreenState.EndedState -> "ended"
+                    }
+                },
                 label = "Voice Screen State"
             ) { state ->
                 when (state) {
@@ -71,6 +88,8 @@ fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = viewMo
                     }
                     is VideoScreenState.ActiveState -> {
                         VideoActiveStateContent(
+                            isVideoOff = isVideoOff,
+                            isMuted = isMuted,
                             onEndCall = { vm.endVoiceSupport() },
                             onToggleMute = { vm.toggleMicrophone() },
                             onToggleVideo = { vm.toggleVideo() }
