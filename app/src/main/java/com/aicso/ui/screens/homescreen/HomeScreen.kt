@@ -37,6 +37,7 @@ import com.aicso.ui.theme.Dimens.dp100
 import com.aicso.ui.theme.Dimens.dp160
 import com.aicso.ui.theme.Dimens.dp20
 import com.aicso.ui.theme.Dimens.dp28
+import com.aicso.ui.theme.Dimens.dp60
 import com.aicso.ui.theme.Dimens.sp14
 import com.aicso.ui.theme.Dimens.sp16
 import com.aicso.ui.theme.Dimens.sp18
@@ -54,7 +55,7 @@ fun HomeScreen(navController: NavController) {
             .padding(horizontal = 20.dp)
     ) {
         // Status Bar Space
-        Spacer(modifier = Modifier.height(dp100))
+        Spacer(modifier = Modifier.height(dp60))
 
         // Header with Notification
         Row(

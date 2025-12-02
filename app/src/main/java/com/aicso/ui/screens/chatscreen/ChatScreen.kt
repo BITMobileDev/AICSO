@@ -59,7 +59,7 @@ fun ChatScreen(navController: NavController, modifier: Modifier = Modifier, vm :
             Column{
 
                 TopBar(onIconClick = {navController.popBackStack()},
-                    icon = R.drawable.chatbot_online,
+                    icon = R.drawable.chat_online,
                     description = "Chatbot",
                     name = "AI-CSO Assistant",
                     status = "Online",

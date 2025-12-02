@@ -7,13 +7,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -40,17 +43,23 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aicso.R
+import com.aicso.ui.theme.Dimens.dp12
+import com.aicso.ui.theme.Dimens.dp120
 import com.aicso.ui.theme.Dimens.dp16
 import com.aicso.ui.theme.Dimens.dp2
 import com.aicso.ui.theme.Dimens.dp20
 import com.aicso.ui.theme.Dimens.dp24
 import com.aicso.ui.theme.Dimens.dp4
+import com.aicso.ui.theme.Dimens.dp40
+import com.aicso.ui.theme.Dimens.dp48
 import com.aicso.ui.theme.Dimens.dp50
 import com.aicso.ui.theme.Dimens.dp8
 import com.aicso.ui.theme.Dimens.sp16
+import com.aicso.ui.theme.Dimens.sp20
 import com.aicso.ui.theme.containerColor
 import com.aicso.ui.theme.lightPrimary
 import com.aicso.ui.theme.primaryColor
+import com.aicso.ui.theme.primaryNormal
 
 
 @Composable
@@ -63,7 +72,8 @@ fun ChatBottomAppBar(
 
     BottomAppBar(
         modifier = modifier.fillMaxWidth()
-            .wrapContentHeight(),
+            .wrapContentHeight()
+            .imePadding(),
         containerColor = Color.White,
         contentPadding = PaddingValues(horizontal = dp16, vertical = dp8),
         tonalElevation = dp4
@@ -97,33 +107,28 @@ fun ChatBottomAppBar(
                 )
             }
 
-            OutlinedTextField(
+            BasicTextField(
                 value = messageText,
                 onValueChange = { messageText = it },
-                placeholder = { Text("Type a message...", fontSize = sp16,
-                    fontWeight = FontWeight.SemiBold)},
-                enabled = enabled,
-                modifier = Modifier.weight(1f)
-                    .heightIn(min = 40.dp, max = 120.dp),
-                shape = RoundedCornerShape(dp24),
-                minLines = 1,
-                maxLines = 4,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(dp50)
+                    .heightIn(min = dp40, max = dp120)
+                    .background(containerColor, RoundedCornerShape(dp24))
+                    .border(dp2, primaryColor, RoundedCornerShape(dp24))
+                    .padding(horizontal = dp12, vertical = dp2),  // only padding YOU control
+
                 textStyle = LocalTextStyle.current.copy(
-                    fontSize = 16.sp,
-                    lineHeight = 20.sp
-                )
-                ,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = containerColor,
-                    unfocusedContainerColor = containerColor,
-                    disabledContainerColor = containerColor,
-                    focusedBorderColor = primaryColor,
-                    unfocusedBorderColor = primaryColor
+                    color = Color.Black,
+                    fontSize = sp16,
+                    lineHeight = sp20
                 ),
+
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Sentences,
                     imeAction = ImeAction.Send
                 ),
+
                 keyboardActions = KeyboardActions(
                     onSend = {
                         if (messageText.isNotBlank()) {
@@ -131,8 +136,63 @@ fun ChatBottomAppBar(
                             messageText = ""
                         }
                     }
-                )
+                ),
+
+                decorationBox = { innerTextField ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (messageText.isEmpty()) {
+                            Text(
+                                text = "Type a message...",
+                                color = Color.Gray,
+                                fontSize = sp16
+                            )
+                        }
+                        innerTextField()
+                    }
+                }
             )
+
+
+//            OutlinedTextField(
+//                value = messageText,
+//                onValueChange = { messageText = it },
+//                placeholder = { Text("Type a message...", fontSize = sp16)},
+//                enabled = enabled,
+//                modifier = Modifier.weight(1f)
+//                    .heightIn(min = 40.dp, max = 120.dp),
+//                shape = RoundedCornerShape(dp24),
+////                minLines = 1,
+//                maxLines = 4,
+//                textStyle = LocalTextStyle.current.copy(
+//                    fontSize = 16.sp,
+//                    lineHeight = 20.sp
+//                )
+//                ,
+//                colors = OutlinedTextFieldDefaults.colors(
+//                    focusedContainerColor = containerColor,
+//                    unfocusedContainerColor = containerColor,
+//                    disabledContainerColor = containerColor,
+//                    focusedBorderColor = primaryColor,
+//                    unfocusedBorderColor = primaryColor
+//                ),
+//                contentPaddding= PaddingValues(0.dp)
+//                ,
+//                keyboardOptions = KeyboardOptions(
+//                    capitalization = KeyboardCapitalization.Sentences,
+//                    imeAction = ImeAction.Send
+//                ),
+//                keyboardActions = KeyboardActions(
+//                    onSend = {
+//                        if (messageText.isNotBlank()) {
+//                            onSendMessage(messageText.trim())
+//                            messageText = ""
+//                        }
+//                    }
+//                )
+//            )
 
             IconButton(
                 onClick = {
@@ -143,9 +203,9 @@ fun ChatBottomAppBar(
                 },
                 enabled = enabled && messageText.isNotBlank(),
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(dp48)
                     .background(
-                        color = if (messageText.isNotBlank()) lightPrimary else containerColor,
+                        color = if (messageText.isNotBlank()) primaryNormal else containerColor,
                         shape = RoundedCornerShape(50)
                     )
             ) {

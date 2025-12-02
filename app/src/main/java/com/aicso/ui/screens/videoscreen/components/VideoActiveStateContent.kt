@@ -1,5 +1,10 @@
 package com.aicso.ui.screens.videoscreen.components
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -42,8 +47,10 @@ import com.aicso.ui.theme.Dimens.dp16
 import com.aicso.ui.theme.Dimens.dp2
 import com.aicso.ui.theme.Dimens.dp207
 import com.aicso.ui.theme.Dimens.dp24
+import com.aicso.ui.theme.Dimens.dp28
 import com.aicso.ui.theme.Dimens.dp32
 import com.aicso.ui.theme.Dimens.dp4
+import com.aicso.ui.theme.Dimens.dp40
 import com.aicso.ui.theme.Dimens.dp64
 import com.aicso.ui.theme.Dimens.dp80
 import com.aicso.ui.theme.containerColor
@@ -65,6 +72,7 @@ fun VideoActiveStateContent(isVideoOff : Boolean = false,
         Box(modifier = Modifier
             .background(color = loadingColor,
                 shape = CircleShape)
+            .border(dp2, loadingColor, CircleShape)
             .size(dp207),
             contentAlignment = Alignment.Center
             ){
@@ -79,25 +87,33 @@ fun VideoActiveStateContent(isVideoOff : Boolean = false,
             //Radio Wave Animation
             Row(modifier = Modifier
                 .align(Alignment.Center)
+                .height(dp40)
                 .offset(y= dp80),
                 horizontalArrangement = Arrangement.spacedBy(dp4))
-            {repeat(5){index ->
-                var height by remember{ mutableStateOf((20..50).random())}
+            {
+                val infiniteTransition = rememberInfiniteTransition(label = "waveform")
 
-                LaunchedEffect(Unit) {
-                    while (true){
-                        delay(100L*(index + 1))
-                        height = (20..50).random()
-                    }
+                for(i in 0..6){
+                    val height by infiniteTransition.animateFloat(
+                        initialValue = 10f,
+                        targetValue = 30f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(
+                                durationMillis = 800,
+                                delayMillis = i * 100
+                            ),
+                            repeatMode = RepeatMode.Restart
+                        ),
+                        label = "wave$i"
+                    )
+
+                    Box(modifier = Modifier
+                        .width(dp4)
+                        .height(height.dp)
+                        .background(color = Color.White,
+                            shape = RoundedCornerShape(dp2))
+                    )
                 }
-
-                Box(modifier = Modifier
-                    .width(dp4)
-                    .height(height.dp)
-                    .background(color = Color.White,
-                        shape = RoundedCornerShape(dp2))
-                )
-            }
 
             }
 
@@ -110,7 +126,7 @@ fun VideoActiveStateContent(isVideoOff : Boolean = false,
                 .size(width = 110.dp, height = 180.dp),
             shape = RoundedCornerShape(dp16),
             border = BorderStroke(dp2, darkPrimary),
-            color = if(isVideoOff) Color.White else Color.Transparent
+            color = Color.Transparent
         ){
             Box(contentAlignment = Alignment.Center){
                 if (isVideoOff){
@@ -139,16 +155,16 @@ fun VideoActiveStateContent(isVideoOff : Boolean = false,
                 onClick = onToggleMute,
                 modifier = Modifier
                     .size(56.dp)
-                    .background(color = if (isMuted) Color.Unspecified else lightPrimary,
+                    .background(color = if (isMuted) lightPrimary else Color.Unspecified,
                         shape = CircleShape)
 //                    .then(
 //                        if (isMuted) Modifier.border(dp2, lightPrimary, CircleShape)
 //                        else Modifier
 //                    )
             ) {
-                Icon(painter =  if(isMuted) painterResource(R.drawable.mic) else painterResource(R.drawable.mic_off),
-                contentDescription = "Toggle Mute", modifier = Modifier.size(width = 23.2.dp, height = 31.5.dp),
-                tint = if(isMuted) lightPrimary else Color.White)
+                Icon(painter =  if(isMuted) painterResource(R.drawable.mic_off) else painterResource(R.drawable.mic),
+                contentDescription = "Toggle Mute", modifier = Modifier.size(width = 24.dp, height = 35.dp),
+                tint = if(isMuted) Color.White else lightPrimary)
             }
 
             // End Call Button
@@ -171,15 +187,15 @@ fun VideoActiveStateContent(isVideoOff : Boolean = false,
             IconButton(onClick = onToggleVideo,
                 modifier = Modifier
                     .size(56.dp)
-                    .background(color = if (isMuted) Color.Unspecified else lightPrimary,
+                    .background(color = if (isVideoOff) lightPrimary else Color.Unspecified,
                         shape = CircleShape)
 
             ){
                 Icon(
-                    painter = if(isMuted) painterResource(R.drawable.videocam) else painterResource(R.drawable.videocam_off),
+                    painter = if(isVideoOff) painterResource(R.drawable.videocam_off) else painterResource(R.drawable.videocam),
                     contentDescription = "Toggle Video",
-                    modifier = Modifier.size(width = dp24, height = 15.33.dp),
-                    tint = if(isMuted) lightPrimary else Color.White
+                    modifier = Modifier.size(width = dp28, height = 15.33.dp),
+                    tint = if(isVideoOff) Color.White else lightPrimary
                 )
             }
 

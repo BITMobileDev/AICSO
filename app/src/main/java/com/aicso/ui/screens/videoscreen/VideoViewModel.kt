@@ -63,13 +63,15 @@ class VideoScreenViewModel : ViewModel() {
     fun toggleMicrophone() {
         val currentState = _uiState.value
         if (currentState is VideoScreenState.ActiveState) {
-            _uiState.value = currentState.copy(isRecording = !currentState.isRecording)
+            _uiState.value = currentState.copy(isMuted = !currentState.isMuted)
         }
     }
 
     fun toggleVideo() {
-        // Implement Video toggle logic here
-        // You might want to add video state to your ActiveState
+        val currentState = _uiState.value
+        if (currentState is VideoScreenState.ActiveState) {
+            _uiState.value = currentState.copy(isVideoOff = !currentState.isVideoOff)
+        }
     }
 
     private fun startTimer() {
