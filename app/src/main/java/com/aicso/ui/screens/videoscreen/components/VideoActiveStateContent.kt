@@ -22,27 +22,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aicso.R
-import com.aicso.ui.screens.voicescreen.components.WaveformAnimation
 import com.aicso.ui.theme.Dimens.dp120
 import com.aicso.ui.theme.Dimens.dp16
 import com.aicso.ui.theme.Dimens.dp2
@@ -58,8 +51,6 @@ import com.aicso.ui.theme.containerColor
 import com.aicso.ui.theme.darkPrimary
 import com.aicso.ui.theme.lightPrimary
 import com.aicso.ui.theme.loadingColor
-import com.aicso.ui.theme.primaryColor
-import kotlinx.coroutines.delay
 
 @Composable
 fun VideoActiveStateContent(isVideoOff : Boolean = false,
