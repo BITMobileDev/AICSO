@@ -52,7 +52,7 @@ fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = viewMo
 
     Scaffold(
         topBar = {
-            VideoScreenTopAppBar(onIconClick = {navController.popBackStack()},
+            VideoScreenTopAppBar(onIconClick = {if(isEndCall) vm.resetToDefault() else navController.popBackStack()},
                 callDuration = callDuration,
                 duration = showDuration,
                 endCall = isEndCall)

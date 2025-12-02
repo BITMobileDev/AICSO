@@ -40,7 +40,7 @@ fun QuickActionBox(
 ) {
     Surface(
         modifier = modifier
-            .fillMaxWidth().padding(start = dp30, end = dp30),
+            .fillMaxWidth(),
         color = lightAction
     ) {
         Column(
