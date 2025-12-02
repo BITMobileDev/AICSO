@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aicso.R
 import com.aicso.component.LargeSpace
+import com.aicso.component.MediumSpace
 import com.aicso.component.SmallSpace
 import com.aicso.ui.theme.Dimens.dp12
 import com.aicso.ui.theme.Dimens.dp16
@@ -38,6 +40,7 @@ import com.aicso.ui.theme.Dimens.dp21
 import com.aicso.ui.theme.Dimens.dp24
 import com.aicso.ui.theme.Dimens.dp32
 import com.aicso.ui.theme.Dimens.dp4
+import com.aicso.ui.theme.Dimens.dp40
 import com.aicso.ui.theme.Dimens.dp8
 import com.aicso.ui.theme.Dimens.dp80
 import com.aicso.ui.theme.callGreen
@@ -104,18 +107,20 @@ fun VideoReadyState(
             color = Color.Black
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        MediumSpace()
 
         IconButton(onClick = onIconClick,
-            modifier = Modifier.size(dp80)
-                .padding(bottom = dp16)
-                .background(color = callGreen, shape = CircleShape),
+            modifier = Modifier
+                .size(dp80)
+                .clip(CircleShape)
+                .background(Color(0xFF1FF057))
         ) {
-            Icon(painter = painterResource(R.drawable.video_call), contentDescription = "Video Call",
-                modifier = Modifier.size(width = dp32, height = dp21),
-                tint = Color.Unspecified
+            Icon(
+                painter = painterResource(id = R.drawable.video_call),
+                contentDescription = "Start Call",
+                tint = Color.Unspecified,
+                modifier = Modifier.size(dp40)
             )
-
         }
 
         LargeSpace()

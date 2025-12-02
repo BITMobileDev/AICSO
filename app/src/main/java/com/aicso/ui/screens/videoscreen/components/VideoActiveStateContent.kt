@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aicso.R
+import com.aicso.ui.screens.voicescreen.components.WaveformAnimation
 import com.aicso.ui.theme.Dimens.dp120
 import com.aicso.ui.theme.Dimens.dp16
 import com.aicso.ui.theme.Dimens.dp2
