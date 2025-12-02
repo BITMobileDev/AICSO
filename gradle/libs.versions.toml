@@ -16,6 +16,7 @@ uiText = "1.9.5"
 
 
 
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -36,6 +37,7 @@ androidx-compose-foundation-layout = { group = "androidx.compose.foundation", na
 serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializationVersion"}
 splashScreen = {group = 'androidx.core', name="core-splashscreen", version.ref = "splashScreen"  }
 androidx-compose-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
