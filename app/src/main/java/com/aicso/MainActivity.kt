@@ -13,7 +13,9 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.aicso.ui.navigation.AicsoNavigation
 import com.aicso.ui.theme.AicsoTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +25,6 @@ class MainActivity : ComponentActivity() {
             AicsoTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     AppContent(innerPadding)
-//
                 }
             }
         }
