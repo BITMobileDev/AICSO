@@ -2,4 +2,16 @@
 <resources>
 
     <style name="Theme.Aicso" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="App.Theme.Aicso" parent="Base.Theme.SplashScreen"/>
+    <style name="Theme.Aicso.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="splashScreenIconSize">100dp</item>
+
+        <!-- Foreground logo -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_inset</item>
+        <!-- Optional fade duration -->
+        <item name="windowSplashScreenAnimationDuration">100</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.Aicso</item>
+    </style>
 </resources>

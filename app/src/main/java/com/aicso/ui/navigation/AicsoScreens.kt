@@ -8,6 +8,10 @@ sealed class AicsoScreens : Route {
     data object HomeScreen : AicsoScreens()
 
     @Serializable
+    data object ChatScreen : AicsoScreens()
+
+
+    @Serializable
     data object VoiceScreen : AicsoScreens()
 
     @Serializable

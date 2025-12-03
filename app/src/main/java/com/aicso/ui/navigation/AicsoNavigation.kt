@@ -1,12 +1,13 @@
 package com.aicso.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.aicso.ui.screens.homescreen.HomeScreen
-import com.aicso.ui.screens.voicescreen.VoiceScreen
+import com.aicso.ui.view.chatscreen.ChatScreen
+import com.aicso.ui.view.homescreen.HomeScreen
+import com.aicso.ui.view.videoscreen.VideoScreen
+import com.aicso.ui.view.voicescreen.VoiceScreen
 
 @Composable
 fun AicsoNavigation(navController: NavHostController){
@@ -18,6 +19,14 @@ fun AicsoNavigation(navController: NavHostController){
 
         composable <AicsoScreens.VoiceScreen> {
             VoiceScreen(navController = navController)
+        }
+
+        composable <AicsoScreens.ChatScreen>{
+            ChatScreen(navController = navController)
+        }
+
+        composable<AicsoScreens.VideoScreen> {
+            VideoScreen(navController = navController)
         }
     }
 }
