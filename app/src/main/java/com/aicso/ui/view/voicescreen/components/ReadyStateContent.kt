@@ -1,15 +1,25 @@
 package com.aicso.ui.view.voicescreen.components
 
+import RequestVoiceCallPermissions
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import com.aicso.R
@@ -24,15 +34,40 @@ import com.aicso.ui.theme.Dimens.sp12
 import com.aicso.ui.theme.Dimens.sp14
 import com.aicso.ui.theme.Dimens.sp20
 import com.aicso.ui.theme.Dimens.sp64
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 
+
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ReadyStateContent(
     onStartCall: () -> Unit
 ) {
+
+    val context = LocalContext.current
+
+    var showPermissionRequest by remember { mutableStateOf(false) }
+
+    var showSettingsDialog by remember { mutableStateOf(false) }
+
+    val audioPermissionState = rememberPermissionState(
+        android.Manifest.permission.RECORD_AUDIO
+    )
+
+    // Handle permission result
+    LaunchedEffect(audioPermissionState.status) {
+        if (audioPermissionState.status.isGranted) {
+            onStartCall()  // Start voice call
+        }
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(dp24)
     ) {
+
         // AI Circle Button
         Box(
             modifier = Modifier.size(dp207),
@@ -71,7 +106,7 @@ fun ReadyStateContent(
         MediumSpace()
 
         IconButton(
-            onClick = { onStartCall() },
+            onClick = { showPermissionRequest = true },
             modifier = Modifier
                 .size(dp80)
                 .clip(CircleShape)
@@ -102,4 +137,54 @@ fun ReadyStateContent(
             )
         }
     }
+    if (showPermissionRequest) {
+        if (!audioPermissionState.status.isGranted && audioPermissionState.status != PermissionStatus.Denied(shouldShowRationale = false) ) {
+           PermissionSettingsDialog(
+               onDismiss = {
+                           showPermissionRequest = false},
+               onOpenSettings = {
+                   val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                       data = Uri.fromParts("package", context.packageName, null)
+                   }
+                   context.startActivity(intent)
+               }
+           )
+
+        }else
+
+        RequestVoiceCallPermissions(
+            onPermissionGranted = {
+                showPermissionRequest = false
+                onStartCall()  // Proceed to voice call
+            },
+            onPermissionDenied = {
+                showPermissionRequest = false
+                // Show toast or snack bar
+            }
+        )
+    }
+}
+
+@Composable
+fun PermissionSettingsDialog(
+    onDismiss: () -> Unit,
+    onOpenSettings: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Permissions Required") },
+        text = {
+            Text("Permissions were permanently denied. Please enable them in Settings to use this feature.")
+        },
+        confirmButton = {
+            Button(onClick = onOpenSettings) {
+                Text("Open Settings")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
 }

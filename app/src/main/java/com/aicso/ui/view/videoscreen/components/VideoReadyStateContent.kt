@@ -1,5 +1,6 @@
 package com.aicso.ui.view.videoscreen.components
 
+import RequestVideoCallPermissions
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,12 +44,19 @@ import com.aicso.ui.theme.Dimens.dp40
 import com.aicso.ui.theme.Dimens.dp80
 import com.aicso.ui.theme.lightActive
 import com.aicso.ui.theme.primaryColor
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun VideoReadyState(
     onIconClick : () -> Unit
 ){
+
+    var showPermissionRequest by remember { mutableStateOf(false) }
+
+
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -102,7 +114,7 @@ fun VideoReadyState(
 
         MediumSpace()
 
-        IconButton(onClick = onIconClick,
+        IconButton(onClick = { showPermissionRequest = true },
             modifier = Modifier
                 .size(dp80)
                 .clip(CircleShape)
@@ -144,5 +156,17 @@ fun VideoReadyState(
             )
         }
 
+    }
+    if (showPermissionRequest) {
+        RequestVideoCallPermissions(
+            onPermissionsGranted = {
+                showPermissionRequest = false
+                onIconClick()  // Proceed to video call
+            },
+            onPermissionsDenied = {
+                showPermissionRequest = false
+                // Show toast or snackbar
+            }
+        )
     }
 }
