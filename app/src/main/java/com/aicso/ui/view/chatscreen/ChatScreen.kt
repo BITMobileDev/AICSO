@@ -94,7 +94,7 @@ fun ChatScreen(navController: NavController, modifier: Modifier = Modifier, vm :
                 modifier = Modifier.weight(1f)
             )
 
-            QuickActionBox(onActionClick = { /* Handle quick action click*/})
+//            QuickActionBox(onActionClick = { /* Handle quick action click*/})
 
             // Message Input
 //            MessageInput(

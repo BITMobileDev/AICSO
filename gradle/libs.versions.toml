@@ -18,6 +18,9 @@ androidx-hilt = "1.2.0"
 gson = "2.13.2"
 retrofit = "2.9.0"
 okhttp3Logging = "4.9.0"
+accompanistVersion = "0.24.13-rc"
+appcompatVersion = "1.7.1"
+
 
 
 
@@ -50,6 +53,9 @@ squareup-retrofit2-retrofit = { group = "com.squareup.retrofit2", name = "retrof
 squareup-retrofit2-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 okhttp3-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp3Logging" }
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3Logging" }
+accompanist = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanistVersion" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompatVersion" }
+
 
 
 
