@@ -12,8 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.aicso.component.ExitCallDialog
 import com.aicso.ui.navigation.AicsoScreens
 import com.aicso.ui.view.voicescreen.components.*
 
@@ -26,11 +26,21 @@ fun VoiceScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    var showExitDialog by remember { mutableStateOf(false) }
+
+
+
+
     Scaffold(
         topBar = {
             if (uiState !is VoiceScreenState.EndedState) {
                 VoiceScreenTopBar(onBackPressed = {
-                    navController.navigate(AicsoScreens.HomeScreen)
+                    if (uiState is VoiceScreenState.ConnectingState || uiState is VoiceScreenState.ActiveState){
+                        showExitDialog = true
+                    } else {
+                        navController.navigate(AicsoScreens.HomeScreen)
+                    }
+
                 })
             }
         }
@@ -65,6 +75,7 @@ fun VoiceScreen(
                     is VoiceScreenState.ActiveState -> {
                         ActiveStateContent(
                             duration = state.duration,
+                            isSpeaker = state.isSpeaker,
                             isRecording = state.isRecording,
                             onEndCall = { viewModel.endVoiceSupport() },
                             onToggleMicrophone = { viewModel.toggleMicrophone() },
@@ -80,6 +91,16 @@ fun VoiceScreen(
                     }
                 }
             }
+        }
+        // Show exit confirmation dialog
+        if (showExitDialog) {
+            ExitCallDialog(
+                onDismiss = { showExitDialog = false },
+                onConfirm = {
+                    viewModel.endVoiceSupport()
+                    viewModel.resetToDefault()
+                }
+            )
         }
     }
 }

@@ -8,8 +8,7 @@ sealed class VideoScreenState {
     data class ActiveState(
         val duration: String = "00:00",
         val isRecording: Boolean = true,
-        val isMuted: Boolean = false,      // Add this - starts unmuted
-        val isVideoOff: Boolean = false
+        val isVideoOff: Boolean = true
     ) : VideoScreenState()
 
     data class EndedState(

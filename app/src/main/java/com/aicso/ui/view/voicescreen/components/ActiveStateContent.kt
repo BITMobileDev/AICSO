@@ -26,11 +26,14 @@ import com.aicso.ui.theme.Dimens.dp6
 import com.aicso.ui.theme.Dimens.sp14
 import com.aicso.ui.theme.Dimens.sp20
 import com.aicso.ui.theme.Dimens.sp64
+import com.aicso.ui.theme.lightPrimary
+import com.aicso.ui.theme.primaryColor
 
 @Composable
 fun ActiveStateContent(
     duration: String,
-    isRecording: Boolean,
+    isSpeaker: Boolean = false,
+    isRecording: Boolean = false,
     onEndCall: () -> Unit,
     onToggleMicrophone: () -> Unit,
     onToggleSpeaker: () -> Unit
@@ -94,20 +97,22 @@ fun ActiveStateContent(
         VeryLargeSpace()
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(48.dp),
+            horizontalArrangement = Arrangement.spacedBy(40.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
                 onClick = onToggleMicrophone,
                 modifier = Modifier.size(56.dp)
+                    .background(color =if (isRecording) Color.Unspecified else Color(0xFFE23F3F), shape = CircleShape)
             ) {
                 Icon(
                     painter = painterResource(
-                        id = if (isRecording) R.drawable.voice_onmute
-                        else R.drawable.call_inprogress
+                        id = if (isRecording) R.drawable.mic_up
+                        else R.drawable.mic_off
                     ),
                     contentDescription = "Toggle Microphone",
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(28.dp),
+                    tint = if(isRecording) lightPrimary else Color.White
                 )
             }
 
@@ -116,7 +121,7 @@ fun ActiveStateContent(
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFFE53935))
+                    .background(Color(0xFFE53935), shape = CircleShape)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.endvoicecall),
@@ -130,12 +135,12 @@ fun ActiveStateContent(
                 onClick = onToggleSpeaker,
                 modifier = Modifier
                     .size(56.dp)
-                    .clip(CircleShape)
+                    .background(color= if (isSpeaker) Color.Unspecified else Color(0xFFE23F3F) , shape =CircleShape)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.speaker),
+                    painter = painterResource(id = if (isSpeaker) R.drawable.speaker_up else R.drawable.speaker_off),
                     contentDescription = "Toggle Speaker",
-                    tint = Color.Red,
+                    tint = if(isSpeaker) lightPrimary else Color.White,
                     modifier = Modifier.size(28.dp)
                 )
             }

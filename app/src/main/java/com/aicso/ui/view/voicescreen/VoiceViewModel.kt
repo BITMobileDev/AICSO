@@ -70,8 +70,10 @@ class VoiceScreenViewModel @Inject constructor() : ViewModel() {
     }
 
     fun toggleSpeaker() {
-        // Implement speaker toggle logic here
-        // You might want to add speaker state to your ActiveState
+        val currentState = _uiState.value
+        if (currentState is VoiceScreenState.ActiveState){
+            _uiState.value = currentState.copy(isSpeaker = !currentState.isSpeaker)
+        }
     }
 
     private fun startTimer() {
