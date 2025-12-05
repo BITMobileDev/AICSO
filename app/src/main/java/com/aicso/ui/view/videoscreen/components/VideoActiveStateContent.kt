@@ -47,7 +47,7 @@ import com.aicso.ui.theme.loadingColor
 
 @Composable
 fun VideoActiveStateContent(isVideoOff : Boolean = false,
-                     isMuted : Boolean = false,
+                     isRecording : Boolean = false,
                      onEndCall : () -> Unit,
                      onToggleVideo : () -> Unit,
                      onToggleMute : () -> Unit){
@@ -88,11 +88,11 @@ fun VideoActiveStateContent(isVideoOff : Boolean = false,
                 .padding(end = dp24, bottom = dp120)
                 .size(width = 110.dp, height = 180.dp),
             shape = RoundedCornerShape(dp16),
-            border = BorderStroke(dp2, darkPrimary),
+            border = BorderStroke(dp4, darkPrimary),
             color = Color.Transparent
         ){
             Box(contentAlignment = Alignment.Center){
-                if (isVideoOff){
+                if (!isVideoOff){
                     Icon(imageVector = Icons.Default.Warning,
                         contentDescription = "video off",
                         tint = Color.Gray,
@@ -118,16 +118,16 @@ fun VideoActiveStateContent(isVideoOff : Boolean = false,
                 onClick = onToggleMute,
                 modifier = Modifier
                     .size(56.dp)
-                    .background(color = if (isMuted) lightPrimary else Color.Unspecified,
+                    .background(color = if (isRecording) Color.Unspecified else Color(0xFFE23F3F),
                         shape = CircleShape)
 //                    .then(
 //                        if (isMuted) Modifier.border(dp2, lightPrimary, CircleShape)
 //                        else Modifier
 //                    )
             ) {
-                Icon(painter =  if(isMuted) painterResource(R.drawable.mic_off) else painterResource(R.drawable.mic),
-                contentDescription = "Toggle Mute", modifier = Modifier.size(width = 24.dp, height = 35.dp),
-                tint = if(isMuted) Color.White else lightPrimary)
+                Icon(painter =  if(isRecording) painterResource(R.drawable.mic_up) else painterResource(R.drawable.mic_off),
+                contentDescription = "Toggle Mute", modifier = Modifier.size(dp28),
+                tint = if(isRecording) lightPrimary else Color.White)
             }
 
             // End Call Button
@@ -150,15 +150,15 @@ fun VideoActiveStateContent(isVideoOff : Boolean = false,
             IconButton(onClick = onToggleVideo,
                 modifier = Modifier
                     .size(56.dp)
-                    .background(color = if (isVideoOff) lightPrimary else Color.Unspecified,
+                    .background(color = if (isVideoOff) Color.Unspecified else Color(0xFFE23F3F),
                         shape = CircleShape)
 
             ){
                 Icon(
-                    painter = if(isVideoOff) painterResource(R.drawable.videocam_off) else painterResource(R.drawable.videocam),
+                    painter = if(isVideoOff) painterResource(R.drawable.video_up) else painterResource(R.drawable.video_off),
                     contentDescription = "Toggle Video",
-                    modifier = Modifier.size(width = dp28, height = 15.33.dp),
-                    tint = if(isVideoOff) Color.White else lightPrimary
+                    modifier = Modifier.size(dp28),
+                    tint = if(isVideoOff) lightPrimary else Color.White
                 )
             }
 
