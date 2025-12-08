@@ -35,7 +35,7 @@ class VideoScreenViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun endVoiceSupport() {
+    fun endVideoSupport() {
         // Get the current duration before stopping
         val currentState = _uiState.value
         val finalDuration = if (currentState is VideoScreenState.ActiveState) {

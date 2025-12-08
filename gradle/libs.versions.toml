@@ -20,6 +20,9 @@ retrofit = "2.9.0"
 okhttp3Logging = "4.9.0"
 accompanistVersion = "0.24.13-rc"
 appcompatVersion = "1.7.1"
+datastoreVersion = "1.1.7"
+webrtcVersion = "1.1.54797"
+
 
 
 
@@ -55,8 +58,9 @@ okhttp3-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor"
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3Logging" }
 accompanist = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanistVersion" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompatVersion" }
-
-
+preferenceDatastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastoreVersion" }
+protodatastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastoreVersion" }
+webrtc = {group = "org.webrtc", name = "google-webrtc", version.ref = "webrtcVersion"}
 
 
 [plugins]

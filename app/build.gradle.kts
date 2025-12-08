@@ -19,6 +19,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "BASE_URL", "\"https://aicso-dev-backend-ca.bluegrass-88201ab2.canadacentral.azurecontainerapps.io/ChatHub-Mobile-Integration.html\"")
+        buildConfigField("boolean", "DEBUG_LEVEL", "true")
     }
 
     buildTypes {
@@ -39,6 +42,8 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+
     }
 }
 
@@ -93,6 +98,13 @@ dependencies {
 
     //accompanist for permission requesting
     implementation(libs.accompanist)
+
+    //    datastore
+    implementation(libs.preferenceDatastore)
+    implementation (libs.protodatastore)
+
+    //webrtc
+    implementation(libs.webrtc)
 
 
 

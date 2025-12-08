@@ -25,7 +25,8 @@ import com.aicso.ui.theme.Dimens.dp24
 fun VideoScreenTopAppBar(callDuration:String,
                          onIconClick : ()-> Unit,
                          duration : Boolean = false,
-                         endCall : Boolean = false){
+                         endCall : Boolean = false,
+                         activeCall : Boolean = false){
     CenterAlignedTopAppBar(
         title = {
             if (duration){
@@ -38,7 +39,7 @@ fun VideoScreenTopAppBar(callDuration:String,
 
         },
         navigationIcon = {
-            if(!endCall){
+            if(!endCall && !activeCall){
                 IconButton(onClick = onIconClick, modifier = Modifier.padding(start = dp10)
                     .size(dp24)) {
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",
