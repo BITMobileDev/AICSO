@@ -90,4 +90,15 @@ dependencies {
     //gson
     implementation(libs.gson)
 
+
+
+    // New dependencies for chat feature
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // WebRTC (for future video/voice features)
+    implementation(libs.webrtc)
+
 }

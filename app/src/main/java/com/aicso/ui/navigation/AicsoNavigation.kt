@@ -22,7 +22,7 @@ fun AicsoNavigation(navController: NavHostController){
         }
 
         composable <AicsoScreens.ChatScreen>{
-            ChatScreen(navController = navController)
+            ChatScreen(navController = navController, serverUrl = "ws://your-server:8080/chat")
         }
 
         composable<AicsoScreens.VideoScreen> {
