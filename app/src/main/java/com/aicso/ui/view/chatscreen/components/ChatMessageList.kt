@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import com.aicso.domain.model.ChatResponse
 import com.aicso.ui.theme.Dimens.dp16
 import com.aicso.ui.theme.Dimens.dp2
+import com.aicso.ui.view.chatscreen.components.MessageBubble
 import kotlinx.coroutines.launch
 
 @Composable

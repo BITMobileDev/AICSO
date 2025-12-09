@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aicso.R
+import com.aicso.component.LargeSpace
 import com.aicso.component.MediumSpace
 import com.aicso.component.SmallSpace
 import com.aicso.ui.theme.callGray
@@ -68,7 +69,7 @@ fun VideoCallEndedState(onStartNewCall : () -> Unit,
                 color = callGray
             )
 
-            MediumSpace()
+            LargeSpace()
 
             IconButton(
                 onClick = onStartNewCall,

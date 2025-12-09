@@ -11,6 +11,7 @@ import com.aicso.ui.view.voicescreen.VoiceScreen
 
 @Composable
 fun AicsoNavigation(navController: NavHostController){
+
     NavHost( navController = navController, startDestination = AicsoScreens.HomeScreen){
 
         composable<AicsoScreens.HomeScreen> {
