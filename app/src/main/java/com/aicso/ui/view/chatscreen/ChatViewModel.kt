@@ -1,6 +1,8 @@
 package com.aicso.ui.view.chatscreen
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aicso.BuildConfig
@@ -11,6 +13,8 @@ import com.aicso.data.signalr.SignalREvent
 import com.aicso.data.signalr.SignalRManager
 import com.aicso.domain.model.ChatResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +24,7 @@ import javax.inject.Inject
 enum class ConnectionStatus {
     Connected, Connecting, Disconnected, Reconnecting
 }
-
+@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val signalRManager: SignalRManager,
@@ -44,6 +48,11 @@ class ChatViewModel @Inject constructor(
     val reconnectionInfo: StateFlow<String?> = _reconnectionInfo.asStateFlow()
 
     private var sessionId: String? = null
+    
+    // Session timeout management
+    private var sessionTimeoutJob: Job? = null
+    private var lastActivityTime: Long = System.currentTimeMillis()
+    private val SESSION_TIMEOUT_MS = 15 * 60 * 1000L // 15 minutes
 
     init {
         // Show welcome message
@@ -53,6 +62,9 @@ class ChatViewModel @Inject constructor(
                 isFromUser = false
             )
         )
+        
+        // Start session timeout monitoring
+        startSessionTimeoutMonitoring()
     }
 
     init {
@@ -127,6 +139,7 @@ class ChatViewModel @Inject constructor(
     /**
      * Connect to SignalR Hub
      */
+
     private fun connectToSignalR() {
         if (sessionId == null) {
             _errorMessage.value = "No active session"
@@ -228,6 +241,10 @@ class ChatViewModel @Inject constructor(
             Log.e(TAG, "Cannot send - not connected")
             return
         }
+
+        // Update activity time and restart timeout monitoring
+        updateLastActivity()
+        startSessionTimeoutMonitoring()
 
         _isLoading.value = true
 
@@ -342,8 +359,67 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Start monitoring session timeout
+     */
+    private fun startSessionTimeoutMonitoring() {
+        sessionTimeoutJob?.cancel()
+        sessionTimeoutJob = viewModelScope.launch {
+            while (true) {
+                delay(60_000) // Check every minute
+                
+                val timeSinceLastActivity = System.currentTimeMillis() - lastActivityTime
+                
+                if (timeSinceLastActivity >= SESSION_TIMEOUT_MS) {
+                    Log.d(TAG, "⏱️ Session timeout reached (15 minutes)")
+                    endSession()
+                    break
+                }
+            }
+        }
+    }
+
+    /**
+     * Update last activity time (call when user sends message)
+     */
+    private fun updateLastActivity() {
+        lastActivityTime = System.currentTimeMillis()
+        Log.d(TAG, "Activity updated at: $lastActivityTime")
+    }
+
+    /**
+     * End current session and cleanup
+     */
+    private suspend fun endSession() {
+        Log.d(TAG, "=== Ending Session ===")
+        
+        // Disconnect SignalR
+        signalRManager.disconnect()
+        
+        // Clear messages (keep welcome message)
+        _messages.value = listOf(
+            ChatResponse(
+                message = "Session ended due to inactivity. Starting a new session...",
+                isFromUser = false
+            )
+        )
+        
+        // Clear session ID from preferences
+        aiCsoPreference.clearSessionId()
+        sessionId = null
+        
+        _connectionStatus.value = ConnectionStatus.Disconnected
+        
+        Log.d(TAG, "✓ Session ended and cleaned up")
+        
+        // Create new session after a short delay
+        delay(2000)
+        createChatSession()
+    }
+
     override fun onCleared() {
         super.onCleared()
+        sessionTimeoutJob?.cancel()
         signalRManager.disconnect()
         Log.d(TAG, "ChatViewModel cleared")
     }

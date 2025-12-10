@@ -287,7 +287,9 @@
 
 package com.aicso.ui.view.chatscreen
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -314,7 +316,7 @@ import com.aicso.ui.components.chatscreencomponent.QuickActionBox
 import com.aicso.ui.components.chatscreencomponent.TopBar
 import com.aicso.ui.theme.Dimens.dp1
 
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ChatScreen(
     navController: NavController,
