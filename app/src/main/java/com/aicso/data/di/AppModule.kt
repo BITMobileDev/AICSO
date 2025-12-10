@@ -7,6 +7,8 @@ import com.aicso.core.domain.VoiceRepositoryImpl
 import com.aicso.core.util.AiCsoPreference
 import com.aicso.data.api.ChatApiService
 import com.aicso.data.api.VoiceApiService
+import com.aicso.data.signalr.SignalRManager
+//import com.aicso.data.signalr.SignalRService
 import com.aicso.data.websocket.WebSocketManager
 import com.aicso.domain.repository.ChatRepository
 import com.aicso.domain.repository.VoiceRepository
@@ -88,8 +90,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWebSocketManager(gson: Gson, client : OkHttpClient): WebSocketManager =
-        WebSocketManager(gson, client)
+    fun provideWebSocketManager(gson: Gson, aiCsoPreference: AiCsoPreference,client : OkHttpClient): WebSocketManager =
+        WebSocketManager(gson, client,aiCsoPreference)
 
     @Provides
     @Singleton
@@ -104,6 +106,12 @@ object AppModule {
     @Singleton
     fun provideVoiceRepository(voiceApiService: VoiceApiService, aiCsoPreference: AiCsoPreference) : VoiceRepository{
         return VoiceRepositoryImpl(voiceApiService, aiCsoPreference)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSignalRManager(gson: Gson, client: OkHttpClient): SignalRManager {
+        return SignalRManager(gson)
     }
 }
 

@@ -180,6 +180,7 @@
 package com.aicso.data.websocket
 
 import android.util.Log
+import com.aicso.core.util.AiCsoPreference
 import com.aicso.domain.model.ChatResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.channels.awaitClose
@@ -191,20 +192,19 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class WebSocketManager @Inject constructor(
     private val gson: Gson,
-    private val client: OkHttpClient
+    private val client: OkHttpClient,
+    private val aiCsoPreference: AiCsoPreference
 ) {
     private var webSocket: WebSocket? = null
     private var isConnected: Boolean = false
     private var shouldReconnect: Boolean = true
     private var currentUrl: String? = null
-
 
 
     fun connectToChat(serverUrl: String): Flow<WebSocketEvent> = callbackFlow {
@@ -224,19 +224,30 @@ class WebSocketManager @Inject constructor(
                 .addHeader("Connection", "Upgrade")
                 .build()
 
-            Log.d(TAG, "Request URL: ${request.url}")
-            Log.d(TAG, "Request Headers: ${request.headers}")
-
-            webSocket?.cancel() // Cancel any existing connection
+            webSocket?.cancel()
             webSocket = client.newWebSocket(request, object : WebSocketListener() {
+//                override fun onOpen(webSocket: WebSocket, response: Response) {
+//                    Log.d(TAG, "✓ WebSocket Connected Successfully")
+//                    isConnected = true
+//                    reconnectionAttempts = 0
+//                    trySend(WebSocketEvent.Connected)
+//                }
                 override fun onOpen(webSocket: WebSocket, response: Response) {
                     Log.d(TAG, "✓ WebSocket Connected Successfully")
-                    Log.d(TAG, "Response Code: ${response.code}")
-                    Log.d(TAG, "Response Headers: ${response.headers}")
                     isConnected = true
                     reconnectionAttempts = 0
+                    // Request session ID from server
+                    val request = mapOf(
+                        "action" to "get_session",
+                        "timestamp" to System.currentTimeMillis()
+                    )
+                    val json = gson.toJson(request)
+                    webSocket.send(json)
+
                     trySend(WebSocketEvent.Connected)
                 }
+
+
 
                 override fun onMessage(webSocket: WebSocket, text: String) {
                     Log.d(TAG, "← Message received: $text")
@@ -253,43 +264,20 @@ class WebSocketManager @Inject constructor(
                     Log.e(TAG, "=== WebSocket Connection Failed ===")
                     Log.e(TAG, "Error: ${t.message}")
 
-                    if (response != null) {
-                        Log.e(TAG, "Response Code: ${response.code}")
-                        Log.e(TAG, "Response Message: ${response.message}")
-                        Log.e(TAG, "Response URL: ${response.request.url}")
-                        Log.e(TAG, "Response Headers: ${response.headers}")
-
-                        try {
-                            val body = response.peekBody(1024).string()
-                            Log.e(TAG, "Response Body: $body")
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Could not read response body: ${e.message}")
-                        }
-
-                        // Check if it's the HTTP 200 issue
-                        if (response.code == 200) {
-                            Log.e(TAG, "⚠️ Server returned HTTP 200 instead of 101 - WebSocket upgrade failed")
-                            Log.e(TAG, "This indicates the endpoint doesn't support WebSocket connections")
-                            trySend(WebSocketEvent.Error("WebSocket endpoint not configured correctly (HTTP 200 received)"))
-                            shouldReconnect = false // Don't retry for configuration issues
-                            return
-                        }
+                    if (response != null && response.code == 200) {
+                        Log.e(TAG, "⚠️ Server returned HTTP 200 - WebSocket not configured")
+                        trySend(WebSocketEvent.Error("WebSocket endpoint not configured"))
+                        shouldReconnect = false
+                        return
                     }
 
                     isConnected = false
                     trySend(WebSocketEvent.Error(t.message ?: "Connection failed"))
 
-                    // Attempt reconnection with exponential backoff
                     if (shouldReconnect && reconnectionAttempts < maxReconnectionAttempts) {
                         reconnectionAttempts++
-                        val delay = baseReconnectDelay * reconnectionAttempts
-                        Log.d(TAG, "⟳ Scheduling reconnection attempt $reconnectionAttempts/$maxReconnectionAttempts in ${delay}ms")
-
-                        // Use coroutine for delay and reconnection
+                        Log.d(TAG, "⟳ Scheduling reconnection $reconnectionAttempts/$maxReconnectionAttempts")
                         trySend(WebSocketEvent.Reconnecting(reconnectionAttempts, maxReconnectionAttempts))
-                    } else if (reconnectionAttempts >= maxReconnectionAttempts) {
-                        Log.e(TAG, "✗ Max reconnection attempts reached")
-                        trySend(WebSocketEvent.Error("Max reconnection attempts reached"))
                     }
                 }
 
@@ -302,17 +290,15 @@ class WebSocketManager @Inject constructor(
                 override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                     Log.d(TAG, "WebSocket Closed: $code - $reason")
                     isConnected = false
-                    if (code != 1000) { // 1000 = normal closure
+                    if (code != 1000) {
                         trySend(WebSocketEvent.Disconnected)
                     }
                 }
             })
         }
 
-        // Initial connection attempt
         attemptConnection()
 
-        // Handle reconnection with proper coroutine delays
         var lastReconnectAttempt = 0
         while (reconnectionAttempts > lastReconnectAttempt &&
             reconnectionAttempts < maxReconnectionAttempts &&
@@ -331,15 +317,36 @@ class WebSocketManager @Inject constructor(
         }
     }
 
-    fun sendMessage(message: ChatResponse): Boolean {
+    // FIXED: Made this properly async
+    suspend fun sendTextMessage(text: String): Boolean {
+        Log.d(TAG, "Sending text message: $text")
         return try {
             if (!isConnected) {
                 Log.w(TAG, "⚠️ Cannot send message - WebSocket not connected")
                 return false
             }
 
+            // Get session ID from preferences
+            val sessionId = aiCsoPreference.getSessionId()
+
+            if (sessionId == null) {
+                Log.e(TAG, "⚠️ No session ID found in preferences")
+                return false
+            }
+
+            Log.d(TAG, "→ Preparing message with session ID: $sessionId")
+
+            val message = ChatResponse(
+                action = "SendMessage",
+                message = text,
+                isFromUser = true,
+                sessionId = sessionId,
+                timestamp = System.currentTimeMillis()
+            )
+
             val json = gson.toJson(message)
             Log.d(TAG, "→ Sending message: $json")
+
             val result = webSocket?.send(json) ?: false
 
             if (result) {
@@ -353,15 +360,6 @@ class WebSocketManager @Inject constructor(
             Log.e(TAG, "Error sending message: ${e.message}", e)
             false
         }
-    }
-
-    fun sendTextMessage(text: String): Boolean {
-        val message = ChatResponse(
-            text = text,
-            isFromUser = true,
-            timestamp = System.currentTimeMillis()
-        )
-        return sendMessage(message)
     }
 
     fun disconnect() {

@@ -287,6 +287,7 @@
 
 package com.aicso.ui.view.chatscreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -324,6 +325,9 @@ fun ChatScreen(
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val connectionStatus by viewModel.connectionStatus.collectAsStateWithLifecycle()
     val errorMessage by viewModel.errorMessage.collectAsStateWithLifecycle()
+
+
+
 
 
     Scaffold(
@@ -364,7 +368,12 @@ fun ChatScreen(
         bottomBar = {
             ChatBottomAppBar(
                 onSendMessage = { message ->
-                    viewModel.sendMessage(message)
+
+                        viewModel.sendMessage(message)
+                    Log.d("ChatScreen", "Sending message: $message")
+
+
+//                    viewModel.sendMessage(message, )
                 },
                 enabled = !isLoading && connectionStatus == ConnectionStatus.Connected
             )
@@ -383,6 +392,8 @@ fun ChatScreen(
         }
     }
 }
+
+
 //
 //package com.aicso.ui.view.chatscreen
 //

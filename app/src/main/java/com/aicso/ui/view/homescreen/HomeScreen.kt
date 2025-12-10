@@ -46,16 +46,23 @@ import com.aicso.ui.theme.Dimens.sp2
 import com.aicso.ui.theme.Dimens.sp22
 import com.aicso.ui.theme.Dimens.sp28
 import com.aicso.ui.view.chatscreen.ChatViewModel
+//import com.aicso.ui.view.chatscreen.ChatViewModel
 
 @Composable
 fun HomeScreen(
     navController: NavController,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
+//    val signalRService = SignalRService()
+//
+//    LaunchedEffect(Unit) {
+//        signalRService.connect()
+//    }
 
-    LaunchedEffect(Unit) {
-        viewModel.connectToServer()
-    }
+
+//    LaunchedEffect(Unit) {
+//        viewModel.connectToServer()
+//    }
 
     Column(
         modifier = Modifier
@@ -105,7 +112,9 @@ fun HomeScreen(
             iconRes = R.drawable.chat,
             title = "Chat Support",
             subtitle = "Text-based AI assistance",
-            onClick = { navController.navigate(AicsoScreens.ChatScreen)}
+            onClick = {
+//                viewModel.connectToServer()
+                navController.navigate(AicsoScreens.ChatScreen)}
         )
 
         SmallSpace()

@@ -517,6 +517,7 @@
 package com.aicso.core.domain
 
 import android.util.Log
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aicso.core.util.AiCsoPreference
 import com.aicso.data.api.ChatApiService
 import com.aicso.data.dto.ChatMessageRequest
@@ -545,6 +546,7 @@ class ChatRepositoryImpl @Inject constructor(
 
     private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
     override fun getConnectionState(): StateFlow<ConnectionState> = _connectionState.asStateFlow()
+
 
     private var sessionId: String? = null
 
@@ -623,7 +625,7 @@ class ChatRepositoryImpl @Inject constructor(
                     val message = event.message.copy(
                         status = MessageStatus.READ
                     )
-                    Log.d(TAG, "Message received in repository: ${message.text}")
+                    Log.d(TAG, "Message received in repository: ${message.message}")
                     trySend(Result.success(message))
                 }
 

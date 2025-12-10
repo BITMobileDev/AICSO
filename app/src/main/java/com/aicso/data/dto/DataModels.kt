@@ -36,9 +36,7 @@ data class ChatMessageRequest(
 
 data class ChatSessionResponse(
     val sessionId: String,
-    val messages: List<ChatResponse>,
-    val createdAt: Long,
-    val updatedAt: Long
+    val messages: List<ChatResponse>
 )
 
 data class UserStatusUpdate(

@@ -1,8 +1,8 @@
 package com.aicso.domain.model
 import com.google.gson.annotations.SerializedName
 data class ChatResponse(
-    @SerializedName("text")
-    val text: String,
+    @SerializedName("message")
+    val message: String,
 
     @SerializedName("isFromUser")
     val isFromUser: Boolean,
@@ -10,11 +10,14 @@ data class ChatResponse(
     @SerializedName("timestamp")
     val timestamp: Long = System.currentTimeMillis(),
 
-    @SerializedName("messageId")
-    val messageId: String = java.util.UUID.randomUUID().toString(),
+    @SerializedName("SessionId")
+    val sessionId: String? = null,
 
     @SerializedName("status")
-    val status: MessageStatus = MessageStatus.SENT
+    val status: MessageStatus = MessageStatus.SENT,
+
+    @SerializedName("Action")
+    val action: String? = null
 )
 
 enum class MessageStatus {
