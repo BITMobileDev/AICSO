@@ -1,93 +1,385 @@
+//package com.aicso.data.websocket
+//
+//import android.util.Log
+//import com.aicso.domain.model.ChatResponse
+//import com.google.gson.Gson
+//import kotlinx.coroutines.channels.awaitClose
+//import kotlinx.coroutines.flow.Flow
+//import kotlinx.coroutines.flow.callbackFlow
+//import okhttp3.OkHttpClient
+//import okhttp3.Request
+//import okhttp3.Response
+//import okhttp3.WebSocket
+//import okhttp3.WebSocketListener
+//import java.util.concurrent.TimeUnit
+//import javax.inject.Inject
+//import javax.inject.Singleton
+//
+//@Singleton
+//class WebSocketManager @Inject constructor(
+//    private val gson: Gson
+//) {
+//    private var webSocket: WebSocket? = null
+//    private var isConnected: Boolean = false
+//
+//    // Add reconnection attempts tracking
+//    private var reconnectionAttempts = 0
+//    private val maxReconnectionAttempts = 5
+//    private val reconnectDelay = 2000L // 2 seconds
+//
+//    private val client = OkHttpClient.Builder()
+//        .connectTimeout(30, TimeUnit.SECONDS)
+//        .readTimeout(30, TimeUnit.SECONDS)
+//        .writeTimeout(30, TimeUnit.SECONDS)
+//        .pingInterval(20, TimeUnit.SECONDS) // Add ping interval for keep-alive
+//        .build()
+//
+//    fun connectToChat(serverUrl: String): Flow<WebSocketEvent> = callbackFlow {
+//        Log.d(TAG, "=== WebSocket Connection Attempt ===")
+//        Log.d(TAG, "URL: $serverUrl")
+//
+//        val request = Request.Builder()
+//            .url(serverUrl)
+//            .build()
+//
+//        Log.d(TAG, "Request: ${request.url}")
+//
+//        webSocket = client.newWebSocket(request, object : WebSocketListener() {
+//            override fun onOpen(webSocket: WebSocket, response: Response) {
+//                Log.d(TAG, "WebSocket Connected to: $serverUrl")
+//                Log.d(TAG, "Response Code: ${response.code}")
+//                Log.d(TAG, "Response Message: ${response.message}")
+//                isConnected = true
+//                reconnectionAttempts = 0 // Reset on successful connection
+//                trySend(WebSocketEvent.Connected)
+//            }
+//
+//            override fun onMessage(webSocket: WebSocket, text: String) {
+//                Log.d(TAG, "Message received: $text")
+//                try {
+//                    val message = gson.fromJson(text, ChatResponse::class.java)
+//                    trySend(WebSocketEvent.MessageReceived(message))
+//                } catch (e: Exception) {
+//                    Log.e(TAG, "Error parsing message", e)
+//                    trySend(WebSocketEvent.Error("Failed to parse message: ${e.message}"))
+//                }
+//            }
+//
+//            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+//                Log.e(TAG, "=== WebSocket Connection Failed ===")
+//                Log.e(TAG, "Error: ${t.message}")
+//                Log.e(TAG, "Exception: ", t)
+//
+//                if (response != null) {
+//                    Log.e(TAG, "Response Code: ${response.code}")
+//                    Log.e(TAG, "Response Message: ${response.message}")
+//                    Log.e(TAG, "Response URL: ${response.request.url}")
+//                    Log.e(TAG, "Response Headers: ${response.headers}")
+//                    try {
+//                        Log.e(TAG, "Response Body: ${response.body?.string()}")
+//                    } catch (e: Exception) {
+//                        Log.e(TAG, "Could not read response body")
+//                    }
+//                }
+//
+//                isConnected = false
+//
+//                // Attempt reconnection
+//                if (reconnectionAttempts < maxReconnectionAttempts) {
+//                    reconnectionAttempts++
+//                    Log.d(TAG, "Attempting reconnection ($reconnectionAttempts/$maxReconnectionAttempts) after ${reconnectDelay * reconnectionAttempts}ms")
+//
+//                    // Schedule reconnection after delay
+//                    webSocket.cancel() // Cancel current socket
+//                    android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+//                        if (!isConnected) {
+//                            Log.d(TAG, "Reconnecting...")
+//                            connectToChat(serverUrl) // Reconnect
+//                        }
+//                    }, reconnectDelay * reconnectionAttempts)
+//                } else {
+//                    Log.e(TAG, "Max reconnection attempts reached")
+//                }
+//
+//                trySend(WebSocketEvent.Error(t.message ?: "Unknown error"))
+//            }
+//
+//            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+//                Log.d(TAG, "WebSocket Closing: $code - $reason")
+//                webSocket.close(code, null)
+//                isConnected = false
+//                trySend(WebSocketEvent.Disconnected)
+//            }
+//
+//            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+//                Log.d(TAG, "WebSocket Closed: $code - $reason")
+//                isConnected = false
+//                trySend(WebSocketEvent.Disconnected)
+//            }
+//        })
+//
+//        awaitClose {
+//            disconnect()
+//        }
+//    }
+//
+//    fun sendMessage(message: ChatResponse): Boolean {
+//        return try {
+//            if (!isConnected) {
+//                Log.w(TAG, "Cannot send message - WebSocket not connected")
+//                return false
+//            }
+//
+//            val json = gson.toJson(message)
+//            Log.d(TAG, "Sending message: $json")
+//            val result = webSocket?.send(json) ?: false
+//
+//            if (!result) {
+//                Log.e(TAG, "Failed to send message via WebSocket")
+//            } else {
+//                Log.d(TAG, "Message sent successfully")
+//            }
+//
+//            result
+//        } catch (e: Exception) {
+//            Log.e(TAG, "Error sending message", e)
+//            false
+//        }
+//    }
+//
+//    fun sendTextMessage(text: String): Boolean {
+//        val message = ChatResponse(
+//            text = text,
+//            isFromUser = true,
+//            timestamp = System.currentTimeMillis()
+//        )
+//        return sendMessage(message)
+//    }
+//
+//    fun disconnect() {
+//        try {
+//            Log.d(TAG, "Disconnecting WebSocket")
+//            webSocket?.close(1000, "User disconnected")
+//            webSocket = null
+//            isConnected = false
+//            reconnectionAttempts = 0
+//        } catch (e: Exception) {
+//            Log.e(TAG, "Error disconnecting", e)
+//        }
+//    }
+//
+//    fun isConnected(): Boolean = isConnected
+//
+//    companion object {
+//        private const val TAG = "WebSocketManager"
+//    }
+//}
+
+
+
 package com.aicso.data.websocket
 
 import android.util.Log
+import com.aicso.domain.model.ChatResponse
 import com.google.gson.Gson
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import okhttp3.*
+import kotlinx.coroutines.flow.callbackFlow
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ChatWebSocketManager @Inject constructor(
-    private val client: OkHttpClient,
-    private val gson: Gson
+class WebSocketManager @Inject constructor(
+    private val gson: Gson,
+    private val client: OkHttpClient
 ) {
-
     private var webSocket: WebSocket? = null
+    private var isConnected: Boolean = false
+    private var shouldReconnect: Boolean = true
+    private var currentUrl: String? = null
 
-    private val _messageChannel = Channel<String>(Channel.UNLIMITED)
-    val messageFlow: Flow<String> = _messageChannel.receiveAsFlow()
 
-     val json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
 
-    fun connect(url: String) {
-        if (webSocket != null) {
-            Log.w(TAG, "WebSocket already connected")
-            return
+    fun connectToChat(serverUrl: String): Flow<WebSocketEvent> = callbackFlow {
+        currentUrl = serverUrl
+        shouldReconnect = true
+        var reconnectionAttempts = 0
+        val maxReconnectionAttempts = 5
+        val baseReconnectDelay = 2000L
+
+        suspend fun attemptConnection() {
+            Log.d(TAG, "=== WebSocket Connection Attempt ${reconnectionAttempts + 1} ===")
+            Log.d(TAG, "URL: $serverUrl")
+
+            val request = Request.Builder()
+                .url(serverUrl)
+                .addHeader("Upgrade", "websocket")
+                .addHeader("Connection", "Upgrade")
+                .build()
+
+            Log.d(TAG, "Request URL: ${request.url}")
+            Log.d(TAG, "Request Headers: ${request.headers}")
+
+            webSocket?.cancel() // Cancel any existing connection
+            webSocket = client.newWebSocket(request, object : WebSocketListener() {
+                override fun onOpen(webSocket: WebSocket, response: Response) {
+                    Log.d(TAG, "✓ WebSocket Connected Successfully")
+                    Log.d(TAG, "Response Code: ${response.code}")
+                    Log.d(TAG, "Response Headers: ${response.headers}")
+                    isConnected = true
+                    reconnectionAttempts = 0
+                    trySend(WebSocketEvent.Connected)
+                }
+
+                override fun onMessage(webSocket: WebSocket, text: String) {
+                    Log.d(TAG, "← Message received: $text")
+                    try {
+                        val message = gson.fromJson(text, ChatResponse::class.java)
+                        trySend(WebSocketEvent.MessageReceived(message))
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error parsing message: ${e.message}", e)
+                        trySend(WebSocketEvent.Error("Failed to parse message: ${e.message}"))
+                    }
+                }
+
+                override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                    Log.e(TAG, "=== WebSocket Connection Failed ===")
+                    Log.e(TAG, "Error: ${t.message}")
+
+                    if (response != null) {
+                        Log.e(TAG, "Response Code: ${response.code}")
+                        Log.e(TAG, "Response Message: ${response.message}")
+                        Log.e(TAG, "Response URL: ${response.request.url}")
+                        Log.e(TAG, "Response Headers: ${response.headers}")
+
+                        try {
+                            val body = response.peekBody(1024).string()
+                            Log.e(TAG, "Response Body: $body")
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Could not read response body: ${e.message}")
+                        }
+
+                        // Check if it's the HTTP 200 issue
+                        if (response.code == 200) {
+                            Log.e(TAG, "⚠️ Server returned HTTP 200 instead of 101 - WebSocket upgrade failed")
+                            Log.e(TAG, "This indicates the endpoint doesn't support WebSocket connections")
+                            trySend(WebSocketEvent.Error("WebSocket endpoint not configured correctly (HTTP 200 received)"))
+                            shouldReconnect = false // Don't retry for configuration issues
+                            return
+                        }
+                    }
+
+                    isConnected = false
+                    trySend(WebSocketEvent.Error(t.message ?: "Connection failed"))
+
+                    // Attempt reconnection with exponential backoff
+                    if (shouldReconnect && reconnectionAttempts < maxReconnectionAttempts) {
+                        reconnectionAttempts++
+                        val delay = baseReconnectDelay * reconnectionAttempts
+                        Log.d(TAG, "⟳ Scheduling reconnection attempt $reconnectionAttempts/$maxReconnectionAttempts in ${delay}ms")
+
+                        // Use coroutine for delay and reconnection
+                        trySend(WebSocketEvent.Reconnecting(reconnectionAttempts, maxReconnectionAttempts))
+                    } else if (reconnectionAttempts >= maxReconnectionAttempts) {
+                        Log.e(TAG, "✗ Max reconnection attempts reached")
+                        trySend(WebSocketEvent.Error("Max reconnection attempts reached"))
+                    }
+                }
+
+                override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+                    Log.d(TAG, "WebSocket Closing: $code - $reason")
+                    webSocket.close(1000, null)
+                    isConnected = false
+                }
+
+                override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                    Log.d(TAG, "WebSocket Closed: $code - $reason")
+                    isConnected = false
+                    if (code != 1000) { // 1000 = normal closure
+                        trySend(WebSocketEvent.Disconnected)
+                    }
+                }
+            })
         }
 
-        val request = Request.Builder()
-            .url(url)
-            .build()
+        // Initial connection attempt
+        attemptConnection()
 
-        webSocket = client.newWebSocket(request, object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                Log.i(TAG, "WebSocket connected")
+        // Handle reconnection with proper coroutine delays
+        var lastReconnectAttempt = 0
+        while (reconnectionAttempts > lastReconnectAttempt &&
+            reconnectionAttempts < maxReconnectionAttempts &&
+            shouldReconnect) {
+            lastReconnectAttempt = reconnectionAttempts
+            delay(baseReconnectDelay * reconnectionAttempts)
+
+            if (!isConnected && shouldReconnect) {
+                attemptConnection()
             }
+        }
 
-            override fun onMessage(webSocket: WebSocket, text: String) {
-                Log.d(TAG, "Message received: $text")
-                _messageChannel.trySend(text)
-            }
-
-            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-                Log.i(TAG, "WebSocket closing: $code - $reason")
-                webSocket.close(1000, null)
-            }
-
-            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                Log.i(TAG, "WebSocket closed: $code - $reason")
-                this@ChatWebSocketManager.webSocket = null
-            }
-
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                Log.e(TAG, "WebSocket error", t)
-                _messageChannel.trySend("""{"type":"error","message":"${t.message}"}""")
-                this@ChatWebSocketManager.webSocket = null
-            }
-        })
-    }
-
-    fun sendMessage(message: String) {
-        webSocket?.send(message) ?: run {
-            Log.e(TAG, "Cannot send message: WebSocket not connected")
+        awaitClose {
+            Log.d(TAG, "Flow closed - cleaning up")
+            disconnect()
         }
     }
 
-    inline fun <reified T : Any> sendTypedMessage(message: T) {
-        try {
-            val jsonString = json.encodeToString(message)
-            sendMessage(jsonString)
+    fun sendMessage(message: ChatResponse): Boolean {
+        return try {
+            if (!isConnected) {
+                Log.w(TAG, "⚠️ Cannot send message - WebSocket not connected")
+                return false
+            }
+
+            val json = gson.toJson(message)
+            Log.d(TAG, "→ Sending message: $json")
+            val result = webSocket?.send(json) ?: false
+
+            if (result) {
+                Log.d(TAG, "✓ Message sent successfully")
+            } else {
+                Log.e(TAG, "✗ Failed to send message")
+            }
+
+            result
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to serialize message", e)
+            Log.e(TAG, "Error sending message: ${e.message}", e)
+            false
         }
+    }
+
+    fun sendTextMessage(text: String): Boolean {
+        val message = ChatResponse(
+            text = text,
+            isFromUser = true,
+            timestamp = System.currentTimeMillis()
+        )
+        return sendMessage(message)
     }
 
     fun disconnect() {
-        webSocket?.close(1000, "Client disconnecting")
-        webSocket = null
+        try {
+            Log.d(TAG, "Disconnecting WebSocket")
+            shouldReconnect = false
+            isConnected = false
+            webSocket?.close(1000, "Client disconnected")
+            webSocket = null
+            currentUrl = null
+        } catch (e: Exception) {
+            Log.e(TAG, "Error disconnecting: ${e.message}", e)
+        }
     }
 
-    fun isConnected(): Boolean = webSocket != null
+    fun isConnected(): Boolean = isConnected
 
     companion object {
-        private const val TAG = "ChatWebSocketManager"
+        private const val TAG = "WebSocketManager"
     }
 }
