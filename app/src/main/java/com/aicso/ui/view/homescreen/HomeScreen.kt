@@ -19,6 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -27,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.aicso.R
 import com.aicso.component.MediumSpace
@@ -43,9 +45,18 @@ import com.aicso.ui.theme.Dimens.sp18
 import com.aicso.ui.theme.Dimens.sp2
 import com.aicso.ui.theme.Dimens.sp22
 import com.aicso.ui.theme.Dimens.sp28
+import com.aicso.ui.view.chatscreen.ChatViewModel
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    navController: NavController,
+    viewModel: ChatViewModel = hiltViewModel()
+) {
+
+    LaunchedEffect(Unit) {
+        viewModel.connectToServer()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

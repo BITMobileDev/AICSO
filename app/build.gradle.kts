@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.kapt)
+
+
 }
 
 android {
@@ -19,6 +21,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "BASE_URL", value="\"https://aicso-dev-backend-ca.bluegrass-88201ab2.canadacentral.azurecontainerapps.io/\"")
+        buildConfigField("boolean", "DEBUG_LEVEL", value="true")
+
+
     }
 
     buildTypes {
@@ -39,7 +46,14 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
+    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "1.5.3"
+//    }
 }
 
 dependencies {
@@ -89,5 +103,28 @@ dependencies {
 
     //gson
     implementation(libs.gson)
+
+    //accompanist
+    implementation(libs.accompanist)
+
+    //datastore
+    implementation(libs.preferenceDatastore)
+    implementation(libs.protodatastore)
+
+    implementation(libs.webrtc)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.signalr.core)
+    implementation(libs.rxjava)
+    implementation(libs.rxandroid)
+    implementation(libs.rxkotlin)
+
+
+
+
+
+
 
 }
