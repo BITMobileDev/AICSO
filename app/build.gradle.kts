@@ -20,7 +20,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "BASE_URL", "\"https://aicso-dev-backend-ca.bluegrass-88201ab2.canadacentral.azurecontainerapps.io/ChatHub-Mobile-Integration.html\"")
+        buildConfigField("String", "BASE_URL", "\"https://aicso-dev-backend-ca.bluegrass-88201ab2.canadacentral.azurecontainerapps.io/\"")
         buildConfigField("boolean", "DEBUG_LEVEL", "true")
     }
 
@@ -45,6 +45,7 @@ android {
         buildConfig = true
 
     }
+
 }
 
 dependencies {
@@ -105,6 +106,10 @@ dependencies {
 
     //webrtc
     implementation(libs.webrtc)
+
+//    //live sdk
+//    implementation(libs.livekit.sdk)
+//    implementation(libs.livekit.room)
 
 
 
