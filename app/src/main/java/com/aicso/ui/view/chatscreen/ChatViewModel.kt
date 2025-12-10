@@ -1,10 +1,10 @@
 package com.aicso.ui.view.chatscreen
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aicso.BuildConfig
+import com.aicso.core.util.AiCsoPreference
 import com.aicso.data.api.ChatApiService
 import com.aicso.data.dto.ChatMessageRequest
 import com.aicso.data.signalr.SignalREvent
@@ -24,7 +24,8 @@ enum class ConnectionStatus {
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val signalRManager: SignalRManager,
-    private val chatApiService: ChatApiService
+    private val chatApiService: ChatApiService,
+    private val aiCsoPreference: AiCsoPreference
 ) : ViewModel() {
 
     private val _messages = MutableStateFlow<List<ChatResponse>>(emptyList())
@@ -45,9 +46,28 @@ class ChatViewModel @Inject constructor(
     private var sessionId: String? = null
 
     init {
-        // Create session first, then connect to SignalR
+        // Show welcome message
+        _messages.value = listOf(
+            ChatResponse(
+                message = "Hello! I'm your AI-CSO assistant. How can I help you today?",
+                isFromUser = false
+            )
+        )
+    }
+
+    init {
+        // Check for existing session or create new one
         viewModelScope.launch {
-            createChatSession()
+            // Try to load existing session ID
+            val existingSessionId = aiCsoPreference.getSessionId()
+            if (existingSessionId != null) {
+                Log.d(TAG, "Found existing session: $existingSessionId")
+                sessionId = existingSessionId
+                connectToSignalR()
+            } else {
+                Log.d(TAG, "No existing session, creating new one")
+                createChatSession()
+            }
         }
     }
 
@@ -71,6 +91,9 @@ class ChatViewModel @Inject constructor(
                 if (apiResponse?.success == true) {
                     sessionId = apiResponse.data.id
                     Log.d(TAG, "✓ Session created: $sessionId")
+
+                    // Save session ID to preferences
+                    sessionId?.let { aiCsoPreference.saveSessionId(it) }
 
                     // Connect to SignalR after session is created
                     connectToSignalR()
@@ -157,7 +180,7 @@ class ChatViewModel @Inject constructor(
                 }
             }
 
-            is SignalREvent.MessageReceived -> {
+            is SignalREvent.ReceiveMessage -> {
                 val message = event.message
                 _messages.value = _messages.value + message
                 _isLoading.value = false

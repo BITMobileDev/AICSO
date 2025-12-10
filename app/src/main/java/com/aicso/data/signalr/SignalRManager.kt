@@ -1,7 +1,11 @@
 package com.aicso.data.signalr
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.aicso.domain.model.ChatResponse
+import com.aicso.domain.model.MessageStatus
+import com.aicso.domain.model.SignalRMessageEvent
 import com.google.gson.Gson
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
@@ -20,6 +24,7 @@ class SignalRManager @Inject constructor(
     private var hubConnection: HubConnection? = null
     private var reconnectionAttempts = 0
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun connectToHub(hubUrl: String): Flow<SignalREvent> = callbackFlow {
         Log.d(TAG, "=== Connecting to SignalR Hub ===")
         Log.d(TAG, "Hub URL: $hubUrl")
@@ -30,92 +35,134 @@ class SignalRManager @Inject constructor(
 //                .withAutomaticReconnect() // Handles reconnection automatically
                 .build()
 
-            // Register server method handlers
-
-            // Listen for "ReceiveMessage" from server
+            // Register server event handlers BEFORE connecting
+            
+            // Connection established event
             hubConnection?.on(
-                "SendMessage",
-                { message: String ->
-                    Log.d(TAG, "← ReceiveMessage: $message")
-                    try {
-                        val chatResponse = gson.fromJson(message, ChatResponse::class.java)
-                        trySend(SignalREvent.MessageReceived(chatResponse))
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error parsing ReceiveMessage: ${e.message}", e)
-                    }
-                },
-                String::class.java
-            )
-
-            // Alternative method names your backend might use
-            hubConnection?.on(
-                "ReceiveMessage",
-                { sessionId: String, message: String, timestamp: Long ->
-                    Log.d(TAG, "← MessageReceived: $message")
-                    val chatResponse = ChatResponse(
-                        message = message,
-                        isFromUser = false,
-                        sessionId = sessionId,
-                        timestamp = timestamp
-                    )
-                    trySend(SignalREvent.MessageReceived(chatResponse))
-                },
-                String::class.java,
-                String::class.java,
-                Long::class.java
-            )
-
-            // Listen for "NewMessage"
-            hubConnection?.on(
-                "NewMessage",
-                { content: String ->
-                    Log.d(TAG, "← NewMessage: $content")
-                    val chatResponse = ChatResponse(
-                        message = content,
-                        isFromUser = false,
-                        timestamp = System.currentTimeMillis()
-                    )
-                    trySend(SignalREvent.MessageReceived(chatResponse))
-                },
-                String::class.java
-            )
-
-            hubConnection?.on(
-                "Reconnect",
-                { error ->
-                    reconnectionAttempts++
-                    Log.d(TAG, "⟳ Reconnecting... Attempt $reconnectionAttempts")
-                    if (error != null) {
-                        Log.e(TAG, "Reconnection error: ${error}")
-                    }
-                    trySend(SignalREvent.Reconnecting(reconnectionAttempts))
-                },
-                String::class.java
-            )
-
-            hubConnection?.on(
-                "Reconnected",
-                { connectionId ->
-                    Log.d(TAG, "✓ Reconnected with ID: $connectionId")
-                    reconnectionAttempts = 0
+                "Connected",
+                { data: Map<*, *> ->
+                    val connectionId = data["ConnectionId"] as? String
+                    val message = data["Message"] as? String
+                    val timestamp = data["Timestamp"] as? String
+                    Log.d(TAG, "✓ Connected event received")
+                    Log.d(TAG, "  Connection ID: $connectionId")
+                    Log.d(TAG, "  Message: $message")
+                    Log.d(TAG, "  Timestamp: $timestamp")
                     trySend(SignalREvent.Connected)
                 },
-                String::class.java
+                Map::class.java
             )
 
-
+            // Main message reception event - THIS IS THE KEY EVENT
             hubConnection?.on(
-                "Closed",
-                { error ->
-                    if (error != null) {
-                        Log.e(TAG, "✗ Connection closed with error: ${error}")
-                        trySend(SignalREvent.Error(error ?: "Connection closed"))
-                    } else {
-                        Log.d(TAG, "Connection closed normally")
+                "ReceiveMessage",
+                { data ->
+                    Log.d(TAG, "← ReceiveMessage event received")
+                    Log.d(TAG, "  Raw data: $data")
+                    
+                    try {
+                        // Convert Map to JSON string, then parse with Gson
+                        val jsonString = gson.toJson(data)
+                        Log.d(TAG, "  JSON: $jsonString")
+                        
+                        val signalREvent = gson.fromJson(jsonString, SignalRMessageEvent::class.java)
+                        
+                        Log.d(TAG, "  Session ID: ${signalREvent.sessionId}")
+                        Log.d(TAG, "  Message Content: ${signalREvent.message.content}")
+                        Log.d(TAG, "  Sender: ${signalREvent.message.sender}")
+                        
+                        val chatResponse = ChatResponse(
+                            message = signalREvent.message.content,
+                            isFromUser = signalREvent.message.sender == 0.0,  // 0.0 = User, 1.0 = AI
+                            timestamp = parseTimestamp(signalREvent.message.timestamp),
+                            sessionId = signalREvent.sessionId,
+                            status = MessageStatus.DELIVERED
+                        )
+                        
+                        trySend(SignalREvent.ReceiveMessage(chatResponse))
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error parsing ReceiveMessage event: ${e.message}", e)
+                        e.printStackTrace()
                     }
+                },
+                Map::class.java
+            )
+
+            // Message error event
+            hubConnection?.on(
+                "MessageError",
+                { data: Map<*, *> ->
+                    val sessionId = data["SessionId"] as? String
+                    val error = data["Error"] as? String
+                    val timestamp = data["Timestamp"] as? String
+                    Log.e(TAG, "✗ MessageError event received")
+                    Log.e(TAG, "  Session ID: $sessionId")
+                    Log.e(TAG, "  Error: $error")
+                    trySend(SignalREvent.Error(error ?: "Unknown message error"))
+                },
+                Map::class.java
+            )
+
+            // Typing indicator event
+            hubConnection?.on(
+                "TypingIndicator",
+                { data: Map<*, *> ->
+                    val sessionId = data["SessionId"] as? String
+                    val isTyping = data["IsTyping"] as? Boolean ?: false
+                    Log.d(TAG, "← TypingIndicator: isTyping=$isTyping for session $sessionId")
+                    // You can add a new SignalREvent type for this if needed
+                },
+                Map::class.java
+            )
+
+            // Session escalated event
+            hubConnection?.on(
+                "SessionEscalated",
+                { data: Map<*, *> ->
+                    val sessionId = data["SessionId"] as? String
+                    val reason = data["Reason"] as? String
+                    val message = data["Message"] as? String
+                    Log.d(TAG, "⚠️ SessionEscalated event received")
+                    Log.d(TAG, "  Session ID: $sessionId")
+                    Log.d(TAG, "  Reason: $reason")
+                    Log.d(TAG, "  Message: $message")
+                    // You can add a new SignalREvent type for this if needed
+                },
+                Map::class.java
+            )
+
+            // Session ended event
+            hubConnection?.on(
+                "SessionEnded",
+                { data: Map<*, *> ->
+                    val sessionId = data["SessionId"] as? String
+                    val message = data["Message"] as? String
+                    Log.d(TAG, "🛑 SessionEnded event received")
+                    Log.d(TAG, "  Session ID: $sessionId")
+                    Log.d(TAG, "  Message: $message")
                     trySend(SignalREvent.Disconnected)
                 },
-                String::class.java
+                Map::class.java
+            )
+
+            // User joined event
+            hubConnection?.on(
+                "UserJoined",
+                { data: Map<*, *> ->
+                    val sessionId = data["SessionId"] as? String
+                    Log.d(TAG, "👤 UserJoined event: session $sessionId")
+                },
+                Map::class.java
+            )
+
+            // User left event
+            hubConnection?.on(
+                "UserLeft",
+                { data: Map<*, *> ->
+                    val sessionId = data["SessionId"] as? String
+                    Log.d(TAG, "👤 UserLeft event: session $sessionId")
+                },
+                Map::class.java
             )
 
 
@@ -233,6 +280,22 @@ class SignalRManager @Inject constructor(
      */
     fun isConnected(): Boolean {
         return hubConnection?.connectionState == HubConnectionState.CONNECTED
+    }
+
+    /**
+     * Parse ISO 8601 timestamp or return current time
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun parseTimestamp(timestamp: String?): Long {
+        if (timestamp == null) return System.currentTimeMillis()
+        
+        return try {
+            // Parse ISO 8601 format: "2025-12-08T15:30:00Z"
+            java.time.Instant.parse(timestamp).toEpochMilli()
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to parse timestamp: $timestamp, using current time")
+            System.currentTimeMillis()
+        }
     }
 
     companion object {
