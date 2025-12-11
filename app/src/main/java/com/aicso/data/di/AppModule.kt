@@ -72,8 +72,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAiCsoPreference(@ApplicationContext context: Context): AiCsoPreference {
-        return AiCsoPreference(context)
+    fun provideAiCsoPreference(@ApplicationContext context: Context, gson: Gson): AiCsoPreference {
+        return AiCsoPreference(context, gson)
     }
 
 //    @Provides

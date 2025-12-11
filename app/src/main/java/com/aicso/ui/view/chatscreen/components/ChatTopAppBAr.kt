@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +44,9 @@ fun TopBar(
     iconDescription : String? = null,
     status : String? = null
 ){
-    TopAppBar(modifier = Modifier.height(120.dp),
+
+
+    TopAppBar(modifier = Modifier.height(120.dp), colors = TopAppBarDefaults.topAppBarColors(Color.White),
         title = {
             Row(modifier= Modifier.fillMaxWidth().padding(start = dp10,bottom = dp10, top = dp16),
                 verticalAlignment = Alignment.CenterVertically){
@@ -58,7 +61,8 @@ fun TopBar(
                             text = name,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
-                            lineHeight = 20.sp
+                            lineHeight = 20.sp,
+                            color = Color.Black
                         )
                     }
 
@@ -79,7 +83,8 @@ fun TopBar(
                     shape = CircleShape).size(dp4766)) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
+                    tint = Color.Black
                 )
             }
         }

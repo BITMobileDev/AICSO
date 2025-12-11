@@ -1,49 +1,3 @@
-//package com.aicso.core.util
-//
-//import android.content.Context
-//import androidx.datastore.preferences.preferencesDataStore
-//import com.aicso.BuildConfig
-//import androidx.datastore.core.DataStore
-//import androidx.datastore.preferences.core.Preferences
-//import androidx.datastore.preferences.core.booleanPreferencesKey
-//import androidx.datastore.preferences.core.edit
-//import androidx.datastore.preferences.core.stringPreferencesKey
-//import kotlinx.coroutines.flow.first
-//
-//
-//const val preferenceName = BuildConfig.APPLICATION_ID
-//
-//class AiCsoPreference (private val cont : Context){
-//    private val Context.datastore : DataStore<Preferences> by preferencesDataStore(name = preferenceName)
-//
-//    private object Keys{
-//        val SESSION_ID = stringPreferencesKey("session_id")
-////        val USER_ACTIVE = booleanPreferencesKey("user_active")
-//    }
-//
-//    suspend fun writeToDataStore(value: String){
-//        cont.datastore.edit {
-//            it[Keys.SESSION_ID] = value
-//        }
-//    }
-//
-//    suspend fun readFromDataStore() : String?{
-//        val preferences = cont.datastore.data.first()
-//        return preferences[Keys.SESSION_ID]
-//    }
-//
-//    suspend fun clearDataStore(){
-//        cont.datastore.edit {
-//            it.clear()
-//        }
-//    }
-//
-//}
-//
-//
-
-
-
 package com.aicso.core.util
 
 import android.content.Context
@@ -51,9 +5,11 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.aicso.BuildConfig
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.aicso.domain.model.ChatResponse
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -64,13 +20,17 @@ import javax.inject.Singleton
 const val preferenceName = BuildConfig.APPLICATION_ID
 
 @Singleton
-class AiCsoPreference @Inject constructor(private val context: Context) {
+class AiCsoPreference @Inject constructor(
+    private val context: Context,
+    private val gson: Gson
+) {
     private val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = preferenceName)
 
     private object Keys {
         val SESSION_ID = stringPreferencesKey("session_id")
         val USER_STATUS = stringPreferencesKey("user_status")
-        val LAST_CONNECTION_TIME = stringPreferencesKey("last_connection_time")
+        val LAST_ACTIVITY_TIME = stringPreferencesKey("last_activity_time")
+        val MESSAGES = stringPreferencesKey("messages")
     }
 
     /**
@@ -126,20 +86,76 @@ class AiCsoPreference @Inject constructor(private val context: Context) {
     }
 
     /**
-     * Save last connection time
+     * Save last activity time
      */
-    suspend fun saveLastConnectionTime(timestamp: Long) {
+    suspend fun saveLastActivityTime(timestamp: Long) {
         context.datastore.edit {
-            it[Keys.LAST_CONNECTION_TIME] = timestamp.toString()
+            it[Keys.LAST_ACTIVITY_TIME] = timestamp.toString()
         }
     }
 
     /**
-     * Get last connection time
+     * Get last activity time
      */
-    suspend fun getLastConnectionTime(): Long? {
+    suspend fun getLastActivityTime(): Long? {
         val preferences = context.datastore.data.first()
-        return preferences[Keys.LAST_CONNECTION_TIME]?.toLongOrNull()
+        return preferences[Keys.LAST_ACTIVITY_TIME]?.toLongOrNull()
+    }
+
+    /**
+     * Check if session has expired (2 hours of inactivity)
+     */
+    suspend fun isSessionExpired(): Boolean {
+        val lastActivity = getLastActivityTime() ?: return true
+        val currentTime = System.currentTimeMillis()
+        val twoHoursInMillis = 2 * 60 * 60 * 1000L // 2 hours
+        return (currentTime - lastActivity) > twoHoursInMillis
+    }
+
+    /**
+     * Save messages to DataStore
+     */
+    suspend fun saveMessages(messages: List<ChatResponse>) {
+        try {
+            android.util.Log.d("AiCsoPreference", "Saving ${messages.size} messages")
+            messages.forEachIndexed { index, msg ->
+                android.util.Log.d("AiCsoPreference", "  [$index] ${if (msg.isFromUser) "USER" else "AI"}: ${msg.message}")
+            }
+            
+            val json = gson.toJson(messages)
+            android.util.Log.d("AiCsoPreference", "JSON: $json")
+            
+            context.datastore.edit {
+                it[Keys.MESSAGES] = json
+            }
+            android.util.Log.d("AiCsoPreference", "✓ Messages saved successfully")
+        } catch (e: Exception) {
+            android.util.Log.e("AiCsoPreference", "Error saving messages: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Load messages from DataStore
+     */
+    suspend fun loadMessages(): List<ChatResponse> {
+        return try {
+            val preferences = context.datastore.data.first()
+            val json = preferences[Keys.MESSAGES] ?: return emptyList()
+            val type = object : TypeToken<List<ChatResponse>>() {}.type
+            gson.fromJson(json, type) ?: emptyList()
+        } catch (e: Exception) {
+            android.util.Log.e("AiCsoPreference", "Error loading messages: ${e.message}", e)
+            emptyList()
+        }
+    }
+
+    /**
+     * Clear messages
+     */
+    suspend fun clearMessages() {
+        context.datastore.edit {
+            it.remove(Keys.MESSAGES)
+        }
     }
 
     /**

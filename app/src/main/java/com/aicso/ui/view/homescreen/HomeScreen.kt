@@ -53,16 +53,6 @@ fun HomeScreen(
     navController: NavController,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
-//    val signalRService = SignalRService()
-//
-//    LaunchedEffect(Unit) {
-//        signalRService.connect()
-//    }
-
-
-//    LaunchedEffect(Unit) {
-//        viewModel.connectToServer()
-//    }
 
     Column(
         modifier = Modifier
@@ -123,7 +113,9 @@ fun HomeScreen(
             iconRes = R.drawable.voice_call,
             title = "Voice Call",
             subtitle = "Speak with AI assistant",
-            onClick = { navController.navigate(AicsoScreens.VoiceScreen) }
+            onClick = {
+//                navController.navigate(AicsoScreens.VoiceScreen)
+            }
         )
 
        SmallSpace()
@@ -134,7 +126,9 @@ fun HomeScreen(
             iconRes = R.drawable.showvideo_icon,
             title = "Video Avatar",
             subtitle = "Face-to-face AI experience",
-            onClick = { navController.navigate(AicsoScreens.VideoScreen) }
+            onClick = {
+//                navController.navigate(AicsoScreens.VideoScreen)
+            }
         )
 
         MediumSpace()
