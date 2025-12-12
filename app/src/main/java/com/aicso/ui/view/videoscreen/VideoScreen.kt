@@ -11,14 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.aicso.component.ExitCallDialog
 import com.aicso.ui.view.videoscreen.components.LoadingScreen
 import com.aicso.ui.view.videoscreen.components.VideoActiveStateContent
 import com.aicso.ui.view.videoscreen.components.VideoCallEndedState
@@ -31,7 +27,8 @@ import com.aicso.ui.view.videoscreen.components.VideoScreenTopAppBar
 fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = hiltViewModel()) {
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-    var showExitDialog by remember { mutableStateOf(false) }
+
+//    var showExitDialog by remember { mutableStateOf(false) }
 
 
     // Extract duration from the current state
@@ -47,13 +44,13 @@ fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = hiltVi
     // Determine if it's the end call screen
     val isEndCall = uiState is VideoScreenState.EndedState
 
+
 //    // Extract mute and video states from ActiveState
 //    val isMuted = (uiState as? VideoScreenState.ActiveState)?.isMuted ?: false
 //    val isVideoOff = (uiState as? VideoScreenState.ActiveState)?.isVideoOff ?: false
 ////    val= (uiState as? VideoScreenState.ActiveState)?.isRecording == false
 
     val activeCall = uiState is VideoScreenState.ActiveState
-    val connectingCall = uiState is VideoScreenState.ConnectingState
 
 
 
@@ -63,13 +60,13 @@ fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = hiltVi
             VideoScreenTopAppBar(onIconClick = {
                 when {
                     isEndCall -> vm.resetToDefault()
-                    connectingCall || activeCall -> showExitDialog = true
                     else -> navController.popBackStack()
                 }
             },
                 callDuration = callDuration,
                 duration = showDuration,
-                endCall = isEndCall)
+                endCall = isEndCall,
+                activeCall = activeCall)
         }
     ) {Padding ->
         Column(modifier = Modifier.padding(Padding))
@@ -104,7 +101,7 @@ fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = hiltVi
                         VideoActiveStateContent(
                             isVideoOff = state.isVideoOff,
                             isRecording = state.isRecording,
-                            onEndCall = { vm.endVoiceSupport() },
+                            onEndCall = { vm.endVideoSupport() },
                             onToggleMute = { vm.toggleMicrophone() },
                             onToggleVideo = { vm.toggleVideo() }
                         )
@@ -119,16 +116,16 @@ fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = hiltVi
             }
         }
 
-        // Show exit confirmation dialog
-        if (showExitDialog) {
-            ExitCallDialog(
-                onDismiss = { showExitDialog = false },
-                onConfirm = {
-                    vm.endVoiceSupport()
-                    vm.resetToDefault()
-                }
-            )
-        }
+//        // Show exit confirmation dialog
+//        if (showExitDialog) {
+//            ExitCallDialog(
+//                onDismiss = { showExitDialog = false },
+//                onConfirm = {
+//                    vm.endVideoSupport()
+//                    vm.resetToDefault()
+//                }
+//            )
+//        }
 
     }
 

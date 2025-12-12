@@ -95,7 +95,7 @@ fun MessageBubble(message: ChatResponse) {
 //                    modifier = Modifier.widthIn(max = maxWidth)  // Uses different max widths
                 ) {
                     Text(
-                        text = message.text,
+                        text = message.message,
                         color = textColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,

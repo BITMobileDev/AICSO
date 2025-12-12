@@ -26,7 +26,11 @@ fun VoiceScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    var showExitDialog by remember { mutableStateOf(false) }
+//    var showExitDialog by remember { mutableStateOf(false) }
+
+    val activeCall = uiState is VoiceScreenState.ActiveState
+
+
 
 
 
@@ -35,13 +39,10 @@ fun VoiceScreen(
         topBar = {
             if (uiState !is VoiceScreenState.EndedState) {
                 VoiceScreenTopBar(onBackPressed = {
-                    if (uiState is VoiceScreenState.ConnectingState || uiState is VoiceScreenState.ActiveState){
-                        showExitDialog = true
-                    } else {
                         navController.navigate(AicsoScreens.HomeScreen)
-                    }
 
-                })
+                },
+                    activeCall = activeCall)
             }
         }
     ) { paddingValues ->
@@ -92,15 +93,15 @@ fun VoiceScreen(
                 }
             }
         }
-        // Show exit confirmation dialog
-        if (showExitDialog) {
-            ExitCallDialog(
-                onDismiss = { showExitDialog = false },
-                onConfirm = {
-                    viewModel.endVoiceSupport()
-                    viewModel.resetToDefault()
-                }
-            )
-        }
+//        // Show exit confirmation dialog
+//        if (showExitDialog) {
+//            ExitCallDialog(
+//                onDismiss = { showExitDialog = false },
+//                onConfirm = {
+//                    viewModel.endVoiceSupport()
+//                    viewModel.resetToDefault()
+//                }
+//            )
+//        }
     }
 }
