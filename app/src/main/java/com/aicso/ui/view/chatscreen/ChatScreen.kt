@@ -36,7 +36,7 @@ fun ChatScreen(
     val connectionStatus by viewModel.connectionStatus.collectAsStateWithLifecycle()
     val errorMessage by viewModel.errorMessage.collectAsStateWithLifecycle()
 
-    // Start initialization after composition (doesn't block UI)
+    // Start initialization after the composition (doesn't block UI)
     LaunchedEffect(Unit) {
         viewModel.startInitialization()
     }
