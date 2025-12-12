@@ -1,4 +1,4 @@
-package com.aicso.ui.components.chatscreencomponent
+package com.aicso.ui.view.chatscreen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,13 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aicso.R
 import com.aicso.domain.model.ChatResponse
+import com.aicso.ui.components.chatscreencomponent.formatTimestamp
 import com.aicso.ui.theme.Dimens.dp15
 import com.aicso.ui.theme.Dimens.dp16
 import com.aicso.ui.theme.Dimens.dp2
 import com.aicso.ui.theme.Dimens.dp25
 import com.aicso.ui.theme.Dimens.dp4
 import com.aicso.ui.theme.Dimens.dp8
-import com.aicso.ui.theme.containerColor
+import com.aicso.ui.theme.aiBox
 import com.aicso.ui.theme.lightHover
 import com.aicso.ui.theme.primaryColor
 
@@ -45,7 +46,7 @@ fun MessageBubble(message: ChatResponse) {
     val bubbleColor = if (message.isFromUser) {
         lightHover
     } else {
-        containerColor
+        aiBox
     }
     val textColor = Color.Black
 //    val maxWidth = if (message.isFromUser) 180.dp else 250.dp  // User: 180dp, Bot: 250dp
@@ -94,7 +95,7 @@ fun MessageBubble(message: ChatResponse) {
 //                    modifier = Modifier.widthIn(max = maxWidth)  // Uses different max widths
                 ) {
                     Text(
-                        text = message.text,
+                        text = message.message,
                         color = textColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,

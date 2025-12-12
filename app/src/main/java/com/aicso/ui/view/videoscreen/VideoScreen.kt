@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aicso.ui.view.videoscreen.components.LoadingScreen
 import com.aicso.ui.view.videoscreen.components.VideoActiveStateContent
@@ -29,6 +28,9 @@ fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = hiltVi
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
+//    var showExitDialog by remember { mutableStateOf(false) }
+
+
     // Extract duration from the current state
     val callDuration = when (val state = uiState) {
         is VideoScreenState.ActiveState -> state.duration
@@ -42,18 +44,29 @@ fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = hiltVi
     // Determine if it's the end call screen
     val isEndCall = uiState is VideoScreenState.EndedState
 
-    // Extract mute and video states from ActiveState
-    val isMuted = (uiState as? VideoScreenState.ActiveState)?.isMuted ?: false
-    val isVideoOff = (uiState as? VideoScreenState.ActiveState)?.isVideoOff ?: false
-//    val= (uiState as? VideoScreenState.ActiveState)?.isRecording == false
+
+//    // Extract mute and video states from ActiveState
+//    val isMuted = (uiState as? VideoScreenState.ActiveState)?.isMuted ?: false
+//    val isVideoOff = (uiState as? VideoScreenState.ActiveState)?.isVideoOff ?: false
+////    val= (uiState as? VideoScreenState.ActiveState)?.isRecording == false
+
+    val activeCall = uiState is VideoScreenState.ActiveState
+
+
 
 
     Scaffold(
         topBar = {
-            VideoScreenTopAppBar(onIconClick = {if(isEndCall) vm.resetToDefault() else navController.popBackStack()},
+            VideoScreenTopAppBar(onIconClick = {
+                when {
+                    isEndCall -> vm.resetToDefault()
+                    else -> navController.popBackStack()
+                }
+            },
                 callDuration = callDuration,
                 duration = showDuration,
-                endCall = isEndCall)
+                endCall = isEndCall,
+                activeCall = activeCall)
         }
     ) {Padding ->
         Column(modifier = Modifier.padding(Padding))
@@ -86,9 +99,9 @@ fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = hiltVi
                     }
                     is VideoScreenState.ActiveState -> {
                         VideoActiveStateContent(
-                            isVideoOff = isVideoOff,
-                            isMuted = isMuted,
-                            onEndCall = { vm.endVoiceSupport() },
+                            isVideoOff = state.isVideoOff,
+                            isRecording = state.isRecording,
+                            onEndCall = { vm.endVideoSupport() },
                             onToggleMute = { vm.toggleMicrophone() },
                             onToggleVideo = { vm.toggleVideo() }
                         )
@@ -102,6 +115,17 @@ fun VideoScreen(navController: NavController, vm : VideoScreenViewModel = hiltVi
                 }
             }
         }
+
+//        // Show exit confirmation dialog
+//        if (showExitDialog) {
+//            ExitCallDialog(
+//                onDismiss = { showExitDialog = false },
+//                onConfirm = {
+//                    vm.endVideoSupport()
+//                    vm.resetToDefault()
+//                }
+//            )
+//        }
 
     }
 

@@ -1,0 +1,1599 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>AI-CSO ChatHub - Mobile Integration Guide</title>-->
+<!--    <style>-->
+<!--        * {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--        }-->
+
+<!--        :root {-->
+<!--            &#45;&#45;primary: #6366f1;-->
+<!--            &#45;&#45;primary-dark: #4f46e5;-->
+<!--            &#45;&#45;secondary: #8b5cf6;-->
+<!--            &#45;&#45;success: #10b981;-->
+<!--            &#45;&#45;warning: #f59e0b;-->
+<!--            &#45;&#45;error: #ef4444;-->
+<!--            &#45;&#45;bg-dark: #0f172a;-->
+<!--            &#45;&#45;bg-card: #1e293b;-->
+<!--            &#45;&#45;bg-hover: #334155;-->
+<!--            &#45;&#45;text-primary: #f1f5f9;-->
+<!--            &#45;&#45;text-secondary: #94a3b8;-->
+<!--            &#45;&#45;border: #334155;-->
+<!--        }-->
+
+<!--        body {-->
+<!--            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;-->
+<!--            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--            line-height: 1.6;-->
+<!--            min-height: 100vh;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            max-width: 1400px;-->
+<!--            margin: 0 auto;-->
+<!--            padding: 2rem;-->
+<!--        }-->
+
+<!--        header {-->
+<!--            text-align: center;-->
+<!--            margin-bottom: 3rem;-->
+<!--            padding: 2rem;-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;primary) 0%, var(&#45;&#45;secondary) 100%);-->
+<!--            border-radius: 16px;-->
+<!--            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);-->
+<!--        }-->
+
+<!--        h1 {-->
+<!--            font-size: 2.5rem;-->
+<!--            font-weight: 700;-->
+<!--            margin-bottom: 0.5rem;-->
+<!--            background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);-->
+<!--            -webkit-background-clip: text;-->
+<!--            -webkit-text-fill-color: transparent;-->
+<!--            background-clip: text;-->
+<!--        }-->
+
+<!--        .subtitle {-->
+<!--            font-size: 1.1rem;-->
+<!--            color: #e0e7ff;-->
+<!--            opacity: 0.9;-->
+<!--        }-->
+
+<!--        .nav-tabs {-->
+<!--            display: flex;-->
+<!--            gap: 1rem;-->
+<!--            margin-bottom: 2rem;-->
+<!--            background: var(&#45;&#45;bg-card);-->
+<!--            padding: 0.5rem;-->
+<!--            border-radius: 12px;-->
+<!--            overflow-x: auto;-->
+<!--        }-->
+
+<!--        .tab-btn {-->
+<!--            padding: 0.75rem 1.5rem;-->
+<!--            background: transparent;-->
+<!--            color: var(&#45;&#45;text-secondary);-->
+<!--            border: none;-->
+<!--            border-radius: 8px;-->
+<!--            cursor: pointer;-->
+<!--            font-size: 1rem;-->
+<!--            font-weight: 500;-->
+<!--            transition: all 0.3s ease;-->
+<!--            white-space: nowrap;-->
+<!--        }-->
+
+<!--        .tab-btn:hover {-->
+<!--            background: var(&#45;&#45;bg-hover);-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--        }-->
+
+<!--        .tab-btn.active {-->
+<!--            background: var(&#45;&#45;primary);-->
+<!--            color: white;-->
+<!--            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);-->
+<!--        }-->
+
+<!--        .tab-content {-->
+<!--            display: none;-->
+<!--        }-->
+
+<!--        .tab-content.active {-->
+<!--            display: block;-->
+<!--            animation: fadeIn 0.3s ease;-->
+<!--        }-->
+
+<!--        @keyframes fadeIn {-->
+<!--            from {-->
+<!--                opacity: 0;-->
+<!--                transform: translateY(10px);-->
+<!--            }-->
+
+<!--            to {-->
+<!--                opacity: 1;-->
+<!--                transform: translateY(0);-->
+<!--            }-->
+<!--        }-->
+
+<!--        .card {-->
+<!--            background: var(&#45;&#45;bg-card);-->
+<!--            border-radius: 12px;-->
+<!--            padding: 1.5rem;-->
+<!--            margin-bottom: 1.5rem;-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            transition: all 0.3s ease;-->
+<!--        }-->
+
+<!--        .card:hover {-->
+<!--            border-color: var(&#45;&#45;primary);-->
+<!--            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);-->
+<!--        }-->
+
+<!--        .card h2 {-->
+<!--            color: var(&#45;&#45;primary);-->
+<!--            margin-bottom: 1rem;-->
+<!--            font-size: 1.5rem;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 0.5rem;-->
+<!--        }-->
+
+<!--        .card h3 {-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--            margin-top: 1.5rem;-->
+<!--            margin-bottom: 0.75rem;-->
+<!--            font-size: 1.2rem;-->
+<!--        }-->
+
+<!--        .badge {-->
+<!--            display: inline-block;-->
+<!--            padding: 0.25rem 0.75rem;-->
+<!--            border-radius: 6px;-->
+<!--            font-size: 0.85rem;-->
+<!--            font-weight: 600;-->
+<!--            margin-left: 0.5rem;-->
+<!--        }-->
+
+<!--        .badge.swift {-->
+<!--            background: #ff6b35;-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .badge.kotlin {-->
+<!--            background: #7f52ff;-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .badge.event {-->
+<!--            background: var(&#45;&#45;success);-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .badge.method {-->
+<!--            background: var(&#45;&#45;warning);-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        pre {-->
+<!--            background: var(&#45;&#45;bg-dark);-->
+<!--            padding: 1.5rem;-->
+<!--            border-radius: 8px;-->
+<!--            overflow-x: auto;-->
+<!--            border-left: 4px solid var(&#45;&#45;primary);-->
+<!--            margin: 1rem 0;-->
+<!--        }-->
+
+<!--        code {-->
+<!--            font-family: 'Fira Code', 'Courier New', monospace;-->
+<!--            font-size: 0.9rem;-->
+<!--            line-height: 1.5;-->
+<!--        }-->
+
+<!--        .method-signature {-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;primary) 0%, var(&#45;&#45;secondary) 100%);-->
+<!--            color: white;-->
+<!--            padding: 1rem 1.5rem;-->
+<!--            border-radius: 8px;-->
+<!--            margin: 1rem 0;-->
+<!--            font-family: 'Fira Code', monospace;-->
+<!--            font-size: 0.95rem;-->
+<!--        }-->
+
+<!--        .params-table {-->
+<!--            width: 100%;-->
+<!--            border-collapse: collapse;-->
+<!--            margin: 1rem 0;-->
+<!--        }-->
+
+<!--        .params-table th,-->
+<!--        .params-table td {-->
+<!--            padding: 0.75rem;-->
+<!--            text-align: left;-->
+<!--            border-bottom: 1px solid var(&#45;&#45;border);-->
+<!--        }-->
+
+<!--        .params-table th {-->
+<!--            background: var(&#45;&#45;bg-dark);-->
+<!--            color: var(&#45;&#45;primary);-->
+<!--            font-weight: 600;-->
+<!--        }-->
+
+<!--        .params-table tr:hover {-->
+<!--            background: var(&#45;&#45;bg-hover);-->
+<!--        }-->
+
+<!--        .response-example {-->
+<!--            background: var(&#45;&#45;bg-dark);-->
+<!--            border: 1px solid var(&#45;&#45;success);-->
+<!--            border-radius: 8px;-->
+<!--            padding: 1rem;-->
+<!--            margin: 1rem 0;-->
+<!--        }-->
+
+<!--        .response-example h4 {-->
+<!--            color: var(&#45;&#45;success);-->
+<!--            margin-bottom: 0.5rem;-->
+<!--            font-size: 0.9rem;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 0.5px;-->
+<!--        }-->
+
+<!--        .grid {-->
+<!--            display: grid;-->
+<!--            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));-->
+<!--            gap: 1.5rem;-->
+<!--            margin: 1.5rem 0;-->
+<!--        }-->
+
+<!--        .info-box {-->
+<!--            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);-->
+<!--            border-left: 4px solid var(&#45;&#45;primary);-->
+<!--            padding: 1rem;-->
+<!--            border-radius: 8px;-->
+<!--            margin: 1rem 0;-->
+<!--        }-->
+
+<!--        .warning-box {-->
+<!--            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);-->
+<!--            border-left: 4px solid var(&#45;&#45;warning);-->
+<!--            padding: 1rem;-->
+<!--            border-radius: 8px;-->
+<!--            margin: 1rem 0;-->
+<!--        }-->
+
+<!--        .success-box {-->
+<!--            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);-->
+<!--            border-left: 4px solid var(&#45;&#45;success);-->
+<!--            padding: 1rem;-->
+<!--            border-radius: 8px;-->
+<!--            margin: 1rem 0;-->
+<!--        }-->
+
+<!--        .icon {-->
+<!--            display: inline-block;-->
+<!--            width: 24px;-->
+<!--            height: 24px;-->
+<!--            vertical-align: middle;-->
+<!--        }-->
+
+<!--        .copy-btn {-->
+<!--            background: var(&#45;&#45;primary);-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            padding: 0.5rem 1rem;-->
+<!--            border-radius: 6px;-->
+<!--            cursor: pointer;-->
+<!--            font-size: 0.85rem;-->
+<!--            transition: all 0.3s ease;-->
+<!--            margin-top: 0.5rem;-->
+<!--        }-->
+
+<!--        .copy-btn:hover {-->
+<!--            background: var(&#45;&#45;primary-dark);-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);-->
+<!--        }-->
+
+<!--        .copy-btn:active {-->
+<!--            transform: translateY(0);-->
+<!--        }-->
+
+<!--        footer {-->
+<!--            text-align: center;-->
+<!--            margin-top: 4rem;-->
+<!--            padding: 2rem;-->
+<!--            color: var(&#45;&#45;text-secondary);-->
+<!--            border-top: 1px solid var(&#45;&#45;border);-->
+<!--        }-->
+
+<!--        .search-box {-->
+<!--            width: 100%;-->
+<!--            padding: 1rem;-->
+<!--            background: var(&#45;&#45;bg-card);-->
+<!--            border: 2px solid var(&#45;&#45;border);-->
+<!--            border-radius: 8px;-->
+<!--            color: var(&#45;&#45;text-primary);-->
+<!--            font-size: 1rem;-->
+<!--            margin-bottom: 2rem;-->
+<!--            transition: all 0.3s ease;-->
+<!--        }-->
+
+<!--        .search-box:focus {-->
+<!--            outline: none;-->
+<!--            border-color: var(&#45;&#45;primary);-->
+<!--            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);-->
+<!--        }-->
+
+<!--        @media (max-width: 768px) {-->
+<!--            .container {-->
+<!--                padding: 1rem;-->
+<!--            }-->
+
+<!--            h1 {-->
+<!--                font-size: 2rem;-->
+<!--            }-->
+
+<!--            .nav-tabs {-->
+<!--                flex-wrap: nowrap;-->
+<!--            }-->
+
+<!--            .grid {-->
+<!--                grid-template-columns: 1fr;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+
+<!--<body>-->
+<!--    <div class="container">-->
+<!--        <header>-->
+<!--            <h1>🚀 AI-CSO ChatHub Integration</h1>-->
+<!--            <p class="subtitle">Real-time WebSocket Communication Guide for Mobile Developers</p>-->
+<!--        </header>-->
+
+<!--        <input type="text" class="search-box" id="searchBox"-->
+<!--            placeholder="🔍 Search methods, events, or code examples...">-->
+
+<!--        <div class="nav-tabs">-->
+<!--            <button class="tab-btn active" onclick="switchTab('overview')">📋 Overview</button>-->
+<!--            <button class="tab-btn" onclick="switchTab('swift')">🍎 Swift (iOS)</button>-->
+<!--            <button class="tab-btn" onclick="switchTab('kotlin')">🤖 Kotlin (Android)</button>-->
+<!--            <button class="tab-btn" onclick="switchTab('methods')">⚡ Methods</button>-->
+<!--            <button class="tab-btn" onclick="switchTab('events')">📡 Events</button>-->
+<!--            <button class="tab-btn" onclick="switchTab('examples')">💡 Examples</button>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; OVERVIEW TAB &ndash;&gt;-->
+<!--        <div id="overview" class="tab-content active">-->
+<!--            <div class="card">-->
+<!--                <h2>🎯 Quick Start</h2>-->
+<!--                <p>The AI-CSO ChatHub provides real-time, bi-directional communication between your mobile app and the-->
+<!--                    AI Customer Support Officer backend using SignalR WebSockets.</p>-->
+
+<!--                <div class="info-box">-->
+<!--                    <strong>📍 WebSocket Endpoint:</strong><br>-->
+<!--                    <code>wss://your-api-domain.com/chathub</code>-->
+<!--                </div>-->
+
+<!--                <h3>Key Features</h3>-->
+<!--                <div class="grid">-->
+<!--                    <div class="card">-->
+<!--                        <h3>💬 Real-time Messaging</h3>-->
+<!--                        <p>Send and receive messages instantly without polling</p>-->
+<!--                    </div>-->
+<!--                    <div class="card">-->
+<!--                        <h3>🔄 Auto-reconnection</h3>-->
+<!--                        <p>Built-in reconnection logic for network interruptions</p>-->
+<!--                    </div>-->
+<!--                    <div class="card">-->
+<!--                        <h3>👥 Session Management</h3>-->
+<!--                        <p>Join/leave sessions with group broadcasting</p>-->
+<!--                    </div>-->
+<!--                    <div class="card">-->
+<!--                        <h3>⚠️ PII Protection</h3>-->
+<!--                        <p>Automatic detection and escalation of sensitive data</p>-->
+<!--                    </div>-->
+<!--                    <div class="card">-->
+<!--                        <h3>✍️ Typing Indicators</h3>-->
+<!--                        <p>Show when users are typing in real-time</p>-->
+<!--                    </div>-->
+<!--                    <div class="card">-->
+<!--                        <h3>🆘 Escalation Support</h3>-->
+<!--                        <p>Seamlessly escalate to human agents</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>🔧 Required Dependencies</h2>-->
+
+<!--                <h3>iOS (Swift)</h3>-->
+<!--                <pre><code>// Package.swift or SPM-->
+<!--dependencies: [-->
+<!--    .package(url: "https://github.com/moozzyk/SignalR-Client-Swift", from: "0.9.0")-->
+<!--]-->
+
+<!--// Or CocoaPods-->
+<!--pod 'SwiftSignalRClient'</code></pre>-->
+
+<!--                <h3>Android (Kotlin)</h3>-->
+<!--                <pre><code>// build.gradle.kts-->
+<!--dependencies {-->
+<!--    implementation("com.microsoft.signalr:signalr:7.0.0")-->
+<!--}</code></pre>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>📊 Connection Flow</h2>-->
+<!--                <pre><code>1. Initialize SignalR HubConnection-->
+<!--2. Register event handlers (before connecting)-->
+<!--3. Connect to hub-->
+<!--4. Receive "Connected" event with connectionId-->
+<!--5. Join session using sessionId-->
+<!--6. Send/receive messages in real-time-->
+<!--7. Leave session when done-->
+<!--8. Disconnect (optional, auto-handled on app close)</code></pre>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; SWIFT TAB &ndash;&gt;-->
+<!--        <div id="swift" class="tab-content">-->
+<!--            <div class="card">-->
+<!--                <h2>🍎 Swift (iOS) Implementation</h2>-->
+
+<!--                <h3>1. Setup Connection</h3>-->
+<!--                <pre><code>import SignalRClient-->
+
+<!--class ChatService {-->
+<!--    private var hubConnection: HubConnection?-->
+<!--    private let hubUrl = "https://your-api-domain.com/chathub"-->
+<!--    -->
+<!--    func connect() {-->
+<!--        hubConnection = HubConnectionBuilder(url: URL(string: hubUrl)!)-->
+<!--            .withLogging(minLogLevel: .info)-->
+<!--            .withAutoReconnect()-->
+<!--            .build()-->
+<!--        -->
+<!--        // Register event handlers BEFORE connecting-->
+<!--        registerEventHandlers()-->
+<!--        -->
+<!--        // Start connection-->
+<!--        hubConnection?.start()-->
+<!--    }-->
+<!--    -->
+<!--    private func registerEventHandlers() {-->
+<!--        // Connection events-->
+<!--        hubConnection?.on(method: "Connected") { (data: [String: Any]) in-->
+<!--            print("Connected: \(data)")-->
+<!--            let connectionId = data["ConnectionId"] as? String-->
+<!--            let timestamp = data["Timestamp"] as? String-->
+<!--        }-->
+<!--        -->
+<!--        // Message events-->
+<!--        hubConnection?.on(method: "ReceiveMessage") { (data: [String: Any]) in-->
+<!--            let sessionId = data["SessionId"] as? String-->
+<!--            let message = data["Message"] as? [String: Any]-->
+<!--            let timestamp = data["Timestamp"] as? String-->
+<!--            -->
+<!--            // Update UI with new message-->
+<!--            self.handleNewMessage(message)-->
+<!--        }-->
+<!--        -->
+<!--        // Error events-->
+<!--        hubConnection?.on(method: "Error") { (data: [String: Any]) in-->
+<!--            let errorMessage = data["Message"] as? String-->
+<!--            print("Error: \(errorMessage ?? "Unknown error")")-->
+<!--        }-->
+<!--        -->
+<!--        // Typing indicator-->
+<!--        hubConnection?.on(method: "TypingIndicator") { (data: [String: Any]) in-->
+<!--            let isTyping = data["IsTyping"] as? Bool ?? false-->
+<!--            self.updateTypingIndicator(isTyping)-->
+<!--        }-->
+<!--        -->
+<!--        // Session events-->
+<!--        hubConnection?.on(method: "SessionEnded") { (data: [String: Any]) in-->
+<!--            let sessionId = data["SessionId"] as? String-->
+<!--            self.handleSessionEnded()-->
+<!--        }-->
+<!--        -->
+<!--        hubConnection?.on(method: "SessionEscalated") { (data: [String: Any]) in-->
+<!--            let reason = data["Reason"] as? String-->
+<!--            self.handleEscalation(reason: reason)-->
+<!--        }-->
+<!--    }-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+
+<!--                <h3>2. Send Message</h3>-->
+<!--                <pre><code>func sendMessage(sessionId: String, message: String) {-->
+<!--    hubConnection?.invoke(-->
+<!--        method: "SendMessage",-->
+<!--        arguments: [sessionId, message]-->
+<!--    ) { error in-->
+<!--        if let error = error {-->
+<!--            print("Error sending message: \(error)")-->
+<!--        }-->
+<!--    }-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+
+<!--                <h3>3. Join Session</h3>-->
+<!--                <pre><code>func joinSession(sessionId: String) {-->
+<!--    hubConnection?.invoke(-->
+<!--        method: "JoinSession",-->
+<!--        arguments: [sessionId]-->
+<!--    ) { error in-->
+<!--        if let error = error {-->
+<!--            print("Error joining session: \(error)")-->
+<!--        } else {-->
+<!--            print("Successfully joined session: \(sessionId)")-->
+<!--        }-->
+<!--    }-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+
+<!--                <h3>4. Send Typing Indicator</h3>-->
+<!--                <pre><code>func sendTypingIndicator(sessionId: String, isTyping: Bool) {-->
+<!--    hubConnection?.invoke(-->
+<!--        method: "SendTypingIndicator",-->
+<!--        arguments: [sessionId, isTyping]-->
+<!--    )-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+
+<!--                <h3>5. Disconnect</h3>-->
+<!--                <pre><code>func disconnect() {-->
+<!--    hubConnection?.stop()-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; KOTLIN TAB &ndash;&gt;-->
+<!--        <div id="kotlin" class="tab-content">-->
+<!--            <div class="card">-->
+<!--                <h2>🤖 Kotlin (Android) Implementation</h2>-->
+
+<!--                <h3>1. Setup Connection</h3>-->
+<!--                <pre><code>import com.microsoft.signalr.HubConnection-->
+<!--import com.microsoft.signalr.HubConnectionBuilder-->
+<!--import com.microsoft.signalr.HubConnectionState-->
+<!--import com.google.gson.Gson-->
+
+<!--class ChatService {-->
+<!--    private var hubConnection: HubConnection? = null-->
+<!--    private val hubUrl = "https://your-api-domain.com/chathub"-->
+<!--    private val gson = Gson()-->
+<!--    -->
+<!--    fun connect() {-->
+<!--        hubConnection = HubConnectionBuilder.create(hubUrl)-->
+<!--            .withAutomaticReconnect()-->
+<!--            .build()-->
+<!--        -->
+<!--        // Register event handlers BEFORE connecting-->
+<!--        registerEventHandlers()-->
+<!--        -->
+<!--        // Start connection-->
+<!--        hubConnection?.start()?.blockingAwait()-->
+<!--    }-->
+<!--    -->
+<!--    private fun registerEventHandlers() {-->
+<!--        // Connection events-->
+<!--        hubConnection?.on("Connected", { data: Map<String, Any> ->-->
+<!--            println("Connected: $data")-->
+<!--            val connectionId = data["ConnectionId"] as? String-->
+<!--            val timestamp = data["Timestamp"] as? String-->
+<!--        }, Map::class.java)-->
+<!--        -->
+<!--        // Message events-->
+<!--        hubConnection?.on("ReceiveMessage", { data: Map<String, Any> ->-->
+<!--            val sessionId = data["SessionId"] as? String-->
+<!--            val message = data["Message"] as? Map<String, Any>-->
+<!--            val timestamp = data["Timestamp"] as? String-->
+<!--            -->
+<!--            // Update UI with new message-->
+<!--            handleNewMessage(message)-->
+<!--        }, Map::class.java)-->
+<!--        -->
+<!--        // Error events-->
+<!--        hubConnection?.on("Error", { data: Map<String, Any> ->-->
+<!--            val errorMessage = data["Message"] as? String-->
+<!--            println("Error: ${errorMessage ?: "Unknown error"}")-->
+<!--        }, Map::class.java)-->
+<!--        -->
+<!--        // Typing indicator-->
+<!--        hubConnection?.on("TypingIndicator", { data: Map<String, Any> ->-->
+<!--            val isTyping = data["IsTyping"] as? Boolean ?: false-->
+<!--            updateTypingIndicator(isTyping)-->
+<!--        }, Map::class.java)-->
+<!--        -->
+<!--        // Session events-->
+<!--        hubConnection?.on("SessionEnded", { data: Map<String, Any> ->-->
+<!--            val sessionId = data["SessionId"] as? String-->
+<!--            handleSessionEnded()-->
+<!--        }, Map::class.java)-->
+<!--        -->
+<!--        hubConnection?.on("SessionEscalated", { data: Map<String, Any> ->-->
+<!--            val reason = data["Reason"] as? String-->
+<!--            handleEscalation(reason)-->
+<!--        }, Map::class.java)-->
+<!--    }-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+
+<!--                <h3>2. Send Message</h3>-->
+<!--                <pre><code>fun sendMessage(sessionId: String, message: String) {-->
+<!--    hubConnection?.send("SendMessage", sessionId, message)-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+
+<!--                <h3>3. Join Session</h3>-->
+<!--                <pre><code>fun joinSession(sessionId: String) {-->
+<!--    hubConnection?.send("JoinSession", sessionId)-->
+<!--    println("Joined session: $sessionId")-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+
+<!--                <h3>4. Send Typing Indicator</h3>-->
+<!--                <pre><code>fun sendTypingIndicator(sessionId: String, isTyping: Boolean) {-->
+<!--    hubConnection?.send("SendTypingIndicator", sessionId, isTyping)-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+
+<!--                <h3>5. Disconnect</h3>-->
+<!--                <pre><code>fun disconnect() {-->
+<!--    hubConnection?.stop()-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+
+<!--                <h3>6. Lifecycle Management</h3>-->
+<!--                <pre><code>// In your Activity/Fragment-->
+<!--override fun onResume() {-->
+<!--    super.onResume()-->
+<!--    if (hubConnection?.connectionState != HubConnectionState.CONNECTED) {-->
+<!--        chatService.connect()-->
+<!--    }-->
+<!--}-->
+
+<!--override fun onPause() {-->
+<!--    super.onPause()-->
+<!--    chatService.disconnect()-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; METHODS TAB &ndash;&gt;-->
+<!--        <div id="methods" class="tab-content">-->
+<!--            <div class="card">-->
+<!--                <h2>⚡ Hub Methods (Client → Server)</h2>-->
+<!--                <p>Methods you can invoke from your mobile app</p>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>JoinSession <span class="badge method">METHOD</span></h2>-->
+<!--                <p>Join a chat session to start receiving messages</p>-->
+
+<!--                <div class="method-signature">-->
+<!--                    JoinSession(sessionId: string)-->
+<!--                </div>-->
+
+<!--                <table class="params-table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>Parameter</th>-->
+<!--                            <th>Type</th>-->
+<!--                            <th>Description</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        <tr>-->
+<!--                            <td><code>sessionId</code></td>-->
+<!--                            <td>string</td>-->
+<!--                            <td>The GUID of the chat session to join</td>-->
+<!--                        </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📤 Triggers Event</h4>-->
+<!--                    <pre><code>// To others in the session-->
+<!--{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>LeaveSession <span class="badge method">METHOD</span></h2>-->
+<!--                <p>Leave a chat session</p>-->
+
+<!--                <div class="method-signature">-->
+<!--                    LeaveSession(sessionId: string)-->
+<!--                </div>-->
+
+<!--                <table class="params-table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>Parameter</th>-->
+<!--                            <th>Type</th>-->
+<!--                            <th>Description</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        <tr>-->
+<!--                            <td><code>sessionId</code></td>-->
+<!--                            <td>string</td>-->
+<!--                            <td>The GUID of the chat session to leave</td>-->
+<!--                        </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📤 Triggers Event</h4>-->
+<!--                    <pre><code>// To others in the session-->
+<!--{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>SendMessage <span class="badge method">METHOD</span></h2>-->
+<!--                <p>Send a message in a chat session and receive AI response</p>-->
+
+<!--                <div class="method-signature">-->
+<!--                    SendMessage(sessionId: string, message: string)-->
+<!--                </div>-->
+
+<!--                <table class="params-table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>Parameter</th>-->
+<!--                            <th>Type</th>-->
+<!--                            <th>Description</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        <tr>-->
+<!--                            <td><code>sessionId</code></td>-->
+<!--                            <td>string</td>-->
+<!--                            <td>The GUID of the chat session</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td><code>message</code></td>-->
+<!--                            <td>string</td>-->
+<!--                            <td>The message text to send</td>-->
+<!--                        </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+
+<!--                <div class="warning-box">-->
+<!--                    <strong>⚠️ PII Detection:</strong> Messages are automatically scanned for sensitive information-->
+<!--                    (SSN, credit cards, etc.). If detected, the session will be auto-escalated to a human agent.-->
+<!--                </div>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📤 Success Response (ReceiveMessage event)</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Message": {-->
+<!--    "Id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",-->
+<!--    "Content": "Hello! How can I help you today?",-->
+<!--    "Sender": "AI",-->
+<!--    "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--  },-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>❌ Error Response (MessageError event)</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Error": "AI service error: Connection timeout",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>SendTypingIndicator <span class="badge method">METHOD</span></h2>-->
+<!--                <p>Notify others when user is typing</p>-->
+
+<!--                <div class="method-signature">-->
+<!--                    SendTypingIndicator(sessionId: string, isTyping: bool)-->
+<!--                </div>-->
+
+<!--                <table class="params-table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>Parameter</th>-->
+<!--                            <th>Type</th>-->
+<!--                            <th>Description</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        <tr>-->
+<!--                            <td><code>sessionId</code></td>-->
+<!--                            <td>string</td>-->
+<!--                            <td>The GUID of the chat session</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td><code>isTyping</code></td>-->
+<!--                            <td>boolean</td>-->
+<!--                            <td>true when user starts typing, false when stops</td>-->
+<!--                        </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+
+<!--                <div class="info-box">-->
+<!--                    <strong>💡 Best Practice:</strong> Send <code>isTyping: true</code> when user starts typing, and-->
+<!--                    <code>isTyping: false</code> after 2-3 seconds of inactivity or when message is sent.-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>EscalateSession <span class="badge method">METHOD</span></h2>-->
+<!--                <p>Manually escalate session to a human agent</p>-->
+
+<!--                <div class="method-signature">-->
+<!--                    EscalateSession(sessionId: string, reason: string)-->
+<!--                </div>-->
+
+<!--                <table class="params-table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>Parameter</th>-->
+<!--                            <th>Type</th>-->
+<!--                            <th>Description</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        <tr>-->
+<!--                            <td><code>sessionId</code></td>-->
+<!--                            <td>string</td>-->
+<!--                            <td>The GUID of the chat session</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td><code>reason</code></td>-->
+<!--                            <td>string</td>-->
+<!--                            <td>Reason for escalation (e.g., "User requested human agent")</td>-->
+<!--                        </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📤 Success Response (SessionEscalated event)</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Reason": "User requested human agent",-->
+<!--  "Message": "Your session has been escalated to a human agent",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>EndSession <span class="badge method">METHOD</span></h2>-->
+<!--                <p>End a chat session</p>-->
+
+<!--                <div class="method-signature">-->
+<!--                    EndSession(sessionId: string)-->
+<!--                </div>-->
+
+<!--                <table class="params-table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>Parameter</th>-->
+<!--                            <th>Type</th>-->
+<!--                            <th>Description</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        <tr>-->
+<!--                            <td><code>sessionId</code></td>-->
+<!--                            <td>string</td>-->
+<!--                            <td>The GUID of the chat session to end</td>-->
+<!--                        </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📤 Success Response (SessionEnded event)</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Message": "Chat session has ended",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>GetSessionHistory <span class="badge method">METHOD</span></h2>-->
+<!--                <p>Retrieve full session history (useful for reconnections)</p>-->
+
+<!--                <div class="method-signature">-->
+<!--                    GetSessionHistory(sessionId: string)-->
+<!--                </div>-->
+
+<!--                <table class="params-table">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>Parameter</th>-->
+<!--                            <th>Type</th>-->
+<!--                            <th>Description</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        <tr>-->
+<!--                            <td><code>sessionId</code></td>-->
+<!--                            <td>string</td>-->
+<!--                            <td>The GUID of the chat session</td>-->
+<!--                        </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📤 Success Response (SessionHistory event)</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Session": {-->
+<!--    "Id": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--    "Status": "Active",-->
+<!--    "CreatedAt": "2025-12-08T15:00:00Z",-->
+<!--    "Messages": [-->
+<!--      {-->
+<!--        "Id": "msg-1",-->
+<!--        "Content": "Hello",-->
+<!--        "Sender": "User",-->
+<!--        "Timestamp": "2025-12-08T15:01:00Z"-->
+<!--      },-->
+<!--      {-->
+<!--        "Id": "msg-2",-->
+<!--        "Content": "Hi! How can I help?",-->
+<!--        "Sender": "AI",-->
+<!--        "Timestamp": "2025-12-08T15:01:05Z"-->
+<!--      }-->
+<!--    ]-->
+<!--  },-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; EVENTS TAB &ndash;&gt;-->
+<!--        <div id="events" class="tab-content">-->
+<!--            <div class="card">-->
+<!--                <h2>📡 Hub Events (Server → Client)</h2>-->
+<!--                <p>Events you need to listen for in your mobile app</p>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>Connected <span class="badge event">EVENT</span></h2>-->
+<!--                <p>Fired when client successfully connects to the hub</p>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📥 Event Payload</h4>-->
+<!--                    <pre><code>{-->
+<!--  "ConnectionId": "abc123-connection-id",-->
+<!--  "Message": "Connected to AI-CSO Chat Hub",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+
+<!--                <div class="success-box">-->
+<!--                    <strong>✅ Action:</strong> Store the connectionId for debugging purposes. You can now join sessions.-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>ReceiveMessage <span class="badge event">EVENT</span></h2>-->
+<!--                <p>Fired when a new message is received (AI response or broadcast)</p>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📥 Event Payload</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Message": {-->
+<!--    "Id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",-->
+<!--    "Content": "I can help you with that!",-->
+<!--    "Sender": "AI",-->
+<!--    "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--  },-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+
+<!--                <div class="success-box">-->
+<!--                    <strong>✅ Action:</strong> Update your chat UI with the new message. Display it in the conversation-->
+<!--                    thread.-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>MessageError <span class="badge event">EVENT</span></h2>-->
+<!--                <p>Fired when there's an error processing a message</p>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📥 Event Payload</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Error": "AI service error: Connection timeout",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+
+<!--                <div class="warning-box">-->
+<!--                    <strong>⚠️ Action:</strong> Show error message to user. Allow them to retry sending the message.-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>TypingIndicator <span class="badge event">EVENT</span></h2>-->
+<!--                <p>Fired when another user in the session starts/stops typing</p>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📥 Event Payload</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "IsTyping": true,-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+
+<!--                <div class="success-box">-->
+<!--                    <strong>✅ Action:</strong> Show/hide "AI is typing..." indicator in your UI.-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>UserJoined <span class="badge event">EVENT</span></h2>-->
+<!--                <p>Fired when another user joins the session</p>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📥 Event Payload</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+
+<!--                <div class="info-box">-->
+<!--                    <strong>💡 Note:</strong> Typically used for multi-user sessions or when a human agent joins.-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>UserLeft <span class="badge event">EVENT</span></h2>-->
+<!--                <p>Fired when another user leaves the session</p>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📥 Event Payload</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>SessionEscalated <span class="badge event">EVENT</span></h2>-->
+<!--                <p>Fired when session is escalated to a human agent (auto or manual)</p>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📥 Event Payload</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Reason": "Auto-escalated: Sensitive information detected",-->
+<!--  "Message": "Your session has been escalated to a human agent",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+
+<!--                <div class="warning-box">-->
+<!--                    <strong>⚠️ Action:</strong> Update UI to show escalation status. Inform user that a human agent will-->
+<!--                    assist them shortly.-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>SessionEnded <span class="badge event">EVENT</span></h2>-->
+<!--                <p>Fired when the chat session is ended</p>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📥 Event Payload</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Message": "Chat session has ended",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+
+<!--                <div class="success-box">-->
+<!--                    <strong>✅ Action:</strong> Disable message input. Show session ended message. Optionally navigate-->
+<!--                    back or show feedback form.-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>SessionHistory <span class="badge event">EVENT</span></h2>-->
+<!--                <p>Fired in response to GetSessionHistory method call</p>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📥 Event Payload</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Session": {-->
+<!--    "Id": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--    "Status": "Active",-->
+<!--    "CreatedAt": "2025-12-08T15:00:00Z",-->
+<!--    "Messages": [...]-->
+<!--  },-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+
+<!--                <div class="success-box">-->
+<!--                    <strong>✅ Action:</strong> Populate chat UI with historical messages. Useful after reconnection.-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>Error <span class="badge event">EVENT</span></h2>-->
+<!--                <p>Fired when a general error occurs</p>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📥 Event Payload</h4>-->
+<!--                    <pre><code>{-->
+<!--  "Message": "An error occurred processing your message",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+
+<!--                <div class="warning-box">-->
+<!--                    <strong>⚠️ Action:</strong> Show error message to user. Log for debugging.-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>EscalationError <span class="badge event">EVENT</span></h2>-->
+<!--                <p>Fired when escalation fails</p>-->
+
+<!--                <div class="response-example">-->
+<!--                    <h4>📥 Event Payload</h4>-->
+<!--                    <pre><code>{-->
+<!--  "SessionId": "550e8400-e29b-41d4-a716-446655440000",-->
+<!--  "Error": "Session already has an active escalation",-->
+<!--  "Timestamp": "2025-12-08T15:30:00Z"-->
+<!--}</code></pre>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; EXAMPLES TAB &ndash;&gt;-->
+<!--        <div id="examples" class="tab-content">-->
+<!--            <div class="card">-->
+<!--                <h2>💡 Complete Usage Examples</h2>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>Example 1: Basic Chat Flow <span class="badge swift">SWIFT</span></h2>-->
+<!--                <pre><code>// 1. Initialize and connect-->
+<!--let chatService = ChatService()-->
+<!--chatService.connect()-->
+
+<!--// 2. Wait for connection (in Connected event handler)-->
+<!--// Then join session-->
+<!--chatService.joinSession(sessionId: "550e8400-e29b-41d4-a716-446655440000")-->
+
+<!--// 3. Send a message-->
+<!--chatService.sendMessage(-->
+<!--    sessionId: "550e8400-e29b-41d4-a716-446655440000",-->
+<!--    message: "Hello, I need help with my order"-->
+<!--)-->
+
+<!--// 4. Receive AI response (in ReceiveMessage event handler)-->
+<!--// Display message in UI-->
+
+<!--// 5. Send typing indicator when user types-->
+<!--textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)-->
+
+<!--@objc func textFieldDidChange() {-->
+<!--    chatService.sendTypingIndicator(-->
+<!--        sessionId: currentSessionId,-->
+<!--        isTyping: true-->
+<!--    )-->
+<!--    -->
+<!--    // Cancel previous timer-->
+<!--    typingTimer?.invalidate()-->
+<!--    -->
+<!--    // Set new timer to send false after 2 seconds-->
+<!--    typingTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { _ in-->
+<!--        self.chatService.sendTypingIndicator(-->
+<!--            sessionId: self.currentSessionId,-->
+<!--            isTyping: false-->
+<!--        )-->
+<!--    }-->
+<!--}-->
+
+<!--// 6. End session when done-->
+<!--chatService.endSession(sessionId: "550e8400-e29b-41d4-a716-446655440000")</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>Example 2: Handling Reconnection <span class="badge kotlin">KOTLIN</span></h2>-->
+<!--                <pre><code>class ChatService {-->
+<!--    private var currentSessionId: String? = null-->
+<!--    -->
+<!--    fun connect() {-->
+<!--        hubConnection = HubConnectionBuilder.create(hubUrl)-->
+<!--            .withAutomaticReconnect()-->
+<!--            .build()-->
+<!--        -->
+<!--        // Handle reconnection-->
+<!--        hubConnection?.onReconnected {-->
+<!--            println("Reconnected to hub")-->
+<!--            -->
+<!--            // Rejoin session if we were in one-->
+<!--            currentSessionId?.let { sessionId ->-->
+<!--                joinSession(sessionId)-->
+<!--                -->
+<!--                // Fetch latest messages-->
+<!--                getSessionHistory(sessionId)-->
+<!--            }-->
+<!--        }-->
+<!--        -->
+<!--        registerEventHandlers()-->
+<!--        hubConnection?.start()?.blockingAwait()-->
+<!--    }-->
+<!--    -->
+<!--    fun joinSession(sessionId: String) {-->
+<!--        currentSessionId = sessionId-->
+<!--        hubConnection?.send("JoinSession", sessionId)-->
+<!--    }-->
+<!--    -->
+<!--    fun getSessionHistory(sessionId: String) {-->
+<!--        hubConnection?.send("GetSessionHistory", sessionId)-->
+<!--    }-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>Example 3: Error Handling <span class="badge swift">SWIFT</span></h2>-->
+<!--                <pre><code>private func registerEventHandlers() {-->
+<!--    // Handle message errors-->
+<!--    hubConnection?.on(method: "MessageError") { (data: [String: Any]) in-->
+<!--        let error = data["Error"] as? String ?? "Unknown error"-->
+<!--        -->
+<!--        // Show error to user-->
+<!--        DispatchQueue.main.async {-->
+<!--            self.showErrorAlert(message: error)-->
+<!--            -->
+<!--            // Re-enable send button-->
+<!--            self.sendButton.isEnabled = true-->
+<!--            -->
+<!--            // Optionally retry-->
+<!--            self.showRetryOption()-->
+<!--        }-->
+<!--    }-->
+<!--    -->
+<!--    // Handle general errors-->
+<!--    hubConnection?.on(method: "Error") { (data: [String: Any]) in-->
+<!--        let message = data["Message"] as? String ?? "An error occurred"-->
+<!--        -->
+<!--        DispatchQueue.main.async {-->
+<!--            self.showErrorAlert(message: message)-->
+<!--        }-->
+<!--    }-->
+<!--    -->
+<!--    // Handle escalation-->
+<!--    hubConnection?.on(method: "SessionEscalated") { (data: [String: Any]) in-->
+<!--        let reason = data["Reason"] as? String-->
+<!--        let message = data["Message"] as? String-->
+<!--        -->
+<!--        DispatchQueue.main.async {-->
+<!--            // Update UI to show escalation-->
+<!--            self.showEscalationBanner(reason: reason, message: message)-->
+<!--            -->
+<!--            // Disable AI-specific features-->
+<!--            self.updateUIForHumanAgent()-->
+<!--        }-->
+<!--    }-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>Example 4: Complete ViewModel (MVVM) <span class="badge kotlin">KOTLIN</span></h2>-->
+<!--                <pre><code>class ChatViewModel : ViewModel() {-->
+<!--    private val chatService = ChatService()-->
+<!--    -->
+<!--    private val _messages = MutableLiveData<List<Message>>()-->
+<!--    val messages: LiveData<List<Message>> = _messages-->
+<!--    -->
+<!--    private val _isTyping = MutableLiveData<Boolean>()-->
+<!--    val isTyping: LiveData<Boolean> = _isTyping-->
+<!--    -->
+<!--    private val _error = MutableLiveData<String>()-->
+<!--    val error: LiveData<String> = _error-->
+<!--    -->
+<!--    private val _isEscalated = MutableLiveData<Boolean>()-->
+<!--    val isEscalated: LiveData<Boolean> = _isEscalated-->
+<!--    -->
+<!--    init {-->
+<!--        setupChatService()-->
+<!--    }-->
+<!--    -->
+<!--    private fun setupChatService() {-->
+<!--        chatService.onMessageReceived = { message ->-->
+<!--            val currentMessages = _messages.value.orEmpty().toMutableList()-->
+<!--            currentMessages.add(message)-->
+<!--            _messages.postValue(currentMessages)-->
+<!--        }-->
+<!--        -->
+<!--        chatService.onTypingIndicator = { isTyping ->-->
+<!--            _isTyping.postValue(isTyping)-->
+<!--        }-->
+<!--        -->
+<!--        chatService.onError = { errorMessage ->-->
+<!--            _error.postValue(errorMessage)-->
+<!--        }-->
+<!--        -->
+<!--        chatService.onEscalated = { reason ->-->
+<!--            _isEscalated.postValue(true)-->
+<!--        }-->
+<!--    }-->
+<!--    -->
+<!--    fun connect() {-->
+<!--        viewModelScope.launch {-->
+<!--            chatService.connect()-->
+<!--        }-->
+<!--    }-->
+<!--    -->
+<!--    fun joinSession(sessionId: String) {-->
+<!--        chatService.joinSession(sessionId)-->
+<!--    }-->
+<!--    -->
+<!--    fun sendMessage(sessionId: String, message: String) {-->
+<!--        // Add user message to UI immediately-->
+<!--        val userMessage = Message(-->
+<!--            id = UUID.randomUUID().toString(),-->
+<!--            content = message,-->
+<!--            sender = "User",-->
+<!--            timestamp = System.currentTimeMillis()-->
+<!--        )-->
+<!--        -->
+<!--        val currentMessages = _messages.value.orEmpty().toMutableList()-->
+<!--        currentMessages.add(userMessage)-->
+<!--        _messages.postValue(currentMessages)-->
+<!--        -->
+<!--        // Send to server-->
+<!--        chatService.sendMessage(sessionId, message)-->
+<!--    }-->
+<!--    -->
+<!--    fun sendTypingIndicator(sessionId: String, isTyping: Boolean) {-->
+<!--        chatService.sendTypingIndicator(sessionId, isTyping)-->
+<!--    }-->
+<!--    -->
+<!--    override fun onCleared() {-->
+<!--        super.onCleared()-->
+<!--        chatService.disconnect()-->
+<!--    }-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+<!--            </div>-->
+
+<!--            <div class="card">-->
+<!--                <h2>Example 5: SwiftUI Integration <span class="badge swift">SWIFT</span></h2>-->
+<!--                <pre><code>import SwiftUI-->
+
+<!--class ChatViewModel: ObservableObject {-->
+<!--    @Published var messages: [Message] = []-->
+<!--    @Published var isTyping = false-->
+<!--    @Published var isConnected = false-->
+<!--    @Published var isEscalated = false-->
+<!--    @Published var errorMessage: String?-->
+<!--    -->
+<!--    private let chatService = ChatService()-->
+<!--    private let sessionId: String-->
+<!--    -->
+<!--    init(sessionId: String) {-->
+<!--        self.sessionId = sessionId-->
+<!--        setupChatService()-->
+<!--    }-->
+<!--    -->
+<!--    private func setupChatService() {-->
+<!--        chatService.onConnected = { [weak self] in-->
+<!--            self?.isConnected = true-->
+<!--            self?.chatService.joinSession(sessionId: self?.sessionId ?? "")-->
+<!--        }-->
+<!--        -->
+<!--        chatService.onMessageReceived = { [weak self] message in-->
+<!--            DispatchQueue.main.async {-->
+<!--                self?.messages.append(message)-->
+<!--            }-->
+<!--        }-->
+<!--        -->
+<!--        chatService.onTypingIndicator = { [weak self] isTyping in-->
+<!--            DispatchQueue.main.async {-->
+<!--                self?.isTyping = isTyping-->
+<!--            }-->
+<!--        }-->
+<!--        -->
+<!--        chatService.onEscalated = { [weak self] reason in-->
+<!--            DispatchQueue.main.async {-->
+<!--                self?.isEscalated = true-->
+<!--            }-->
+<!--        }-->
+<!--        -->
+<!--        chatService.onError = { [weak self] error in-->
+<!--            DispatchQueue.main.async {-->
+<!--                self?.errorMessage = error-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
+<!--    -->
+<!--    func connect() {-->
+<!--        chatService.connect()-->
+<!--    }-->
+<!--    -->
+<!--    func sendMessage(_ text: String) {-->
+<!--        let userMessage = Message(-->
+<!--            id: UUID().uuidString,-->
+<!--            content: text,-->
+<!--            sender: "User",-->
+<!--            timestamp: Date()-->
+<!--        )-->
+<!--        -->
+<!--        messages.append(userMessage)-->
+<!--        chatService.sendMessage(sessionId: sessionId, message: text)-->
+<!--    }-->
+<!--    -->
+<!--    func sendTyping(_ isTyping: Bool) {-->
+<!--        chatService.sendTypingIndicator(sessionId: sessionId, isTyping: isTyping)-->
+<!--    }-->
+<!--}-->
+
+<!--struct ChatView: View {-->
+<!--    @StateObject private var viewModel: ChatViewModel-->
+<!--    @State private var messageText = ""-->
+<!--    -->
+<!--    init(sessionId: String) {-->
+<!--        _viewModel = StateObject(wrappedValue: ChatViewModel(sessionId: sessionId))-->
+<!--    }-->
+<!--    -->
+<!--    var body: some View {-->
+<!--        VStack {-->
+<!--            ScrollView {-->
+<!--                ForEach(viewModel.messages) { message in-->
+<!--                    MessageBubble(message: message)-->
+<!--                }-->
+<!--                -->
+<!--                if viewModel.isTyping {-->
+<!--                    TypingIndicator()-->
+<!--                }-->
+<!--            }-->
+<!--            -->
+<!--            if viewModel.isEscalated {-->
+<!--                EscalationBanner()-->
+<!--            }-->
+<!--            -->
+<!--            HStack {-->
+<!--                TextField("Type a message...", text: $messageText)-->
+<!--                    .textFieldStyle(RoundedBorderTextFieldStyle())-->
+<!--                    .onChange(of: messageText) { _ in-->
+<!--                        viewModel.sendTyping(true)-->
+<!--                    }-->
+<!--                -->
+<!--                Button("Send") {-->
+<!--                    viewModel.sendMessage(messageText)-->
+<!--                    messageText = ""-->
+<!--                    viewModel.sendTyping(false)-->
+<!--                }-->
+<!--                .disabled(messageText.isEmpty)-->
+<!--            }-->
+<!--            .padding()-->
+<!--        }-->
+<!--        .onAppear {-->
+<!--            viewModel.connect()-->
+<!--        }-->
+<!--        .alert(item: $viewModel.errorMessage) { error in-->
+<!--            Alert(title: Text("Error"), message: Text(error))-->
+<!--        }-->
+<!--    }-->
+<!--}</code></pre>-->
+<!--                <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <footer>-->
+<!--            <p>AI-CSO ChatHub Integration Guide v1.0</p>-->
+<!--            <p>Built with ❤️ for Mobile Developers</p>-->
+<!--            <p style="margin-top: 1rem; font-size: 0.9rem;">-->
+<!--                📚 For more information, contact your backend team or refer to the API documentation-->
+<!--            </p>-->
+<!--        </footer>-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        // Tab switching-->
+<!--        function switchTab(tabName) {-->
+<!--            // Hide all tabs-->
+<!--            document.querySelectorAll('.tab-content').forEach(tab => {-->
+<!--                tab.classList.remove('active');-->
+<!--            });-->
+
+<!--            // Remove active class from all buttons-->
+<!--            document.querySelectorAll('.tab-btn').forEach(btn => {-->
+<!--                btn.classList.remove('active');-->
+<!--            });-->
+
+<!--            // Show selected tab-->
+<!--            document.getElementById(tabName).classList.add('active');-->
+
+<!--            // Add active class to clicked button-->
+<!--            event.target.classList.add('active');-->
+
+<!--            // Scroll to top-->
+<!--            window.scrollTo({ top: 0, behavior: 'smooth' });-->
+<!--        }-->
+
+<!--        // Copy code functionality-->
+<!--        function copyCode(button) {-->
+<!--            const pre = button.previousElementSibling;-->
+<!--            const code = pre.querySelector('code').textContent;-->
+
+<!--            navigator.clipboard.writeText(code).then(() => {-->
+<!--                const originalText = button.textContent;-->
+<!--                button.textContent = '✅ Copied!';-->
+<!--                button.style.background = 'var(&#45;&#45;success)';-->
+
+<!--                setTimeout(() => {-->
+<!--                    button.textContent = originalText;-->
+<!--                    button.style.background = 'var(&#45;&#45;primary)';-->
+<!--                }, 2000);-->
+<!--            });-->
+<!--        }-->
+
+<!--        // Search functionality-->
+<!--        document.getElementById('searchBox').addEventListener('input', function (e) {-->
+<!--            const searchTerm = e.target.value.toLowerCase();-->
+<!--            const cards = document.querySelectorAll('.card');-->
+
+<!--            cards.forEach(card => {-->
+<!--                const text = card.textContent.toLowerCase();-->
+<!--                if (text.includes(searchTerm)) {-->
+<!--                    card.style.display = 'block';-->
+<!--                } else {-->
+<!--                    card.style.display = 'none';-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+
+<!--        // Smooth scroll for anchor links-->
+<!--        document.querySelectorAll('a[href^="#"]').forEach(anchor => {-->
+<!--            anchor.addEventListener('click', function (e) {-->
+<!--                e.preventDefault();-->
+<!--                const target = document.querySelector(this.getAttribute('href'));-->
+<!--                if (target) {-->
+<!--                    target.scrollIntoView({ behavior: 'smooth' });-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+
+<!--</html>-->

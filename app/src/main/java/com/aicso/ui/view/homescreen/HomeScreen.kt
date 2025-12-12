@@ -19,6 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -27,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.aicso.R
 import com.aicso.component.MediumSpace
@@ -43,9 +45,15 @@ import com.aicso.ui.theme.Dimens.sp18
 import com.aicso.ui.theme.Dimens.sp2
 import com.aicso.ui.theme.Dimens.sp22
 import com.aicso.ui.theme.Dimens.sp28
+import com.aicso.ui.view.chatscreen.ChatViewModel
+//import com.aicso.ui.view.chatscreen.ChatViewModel
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    navController: NavController,
+    viewModel: ChatViewModel = hiltViewModel()
+) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -94,7 +102,9 @@ fun HomeScreen(navController: NavController) {
             iconRes = R.drawable.chat,
             title = "Chat Support",
             subtitle = "Text-based AI assistance",
-            onClick = { navController.navigate(AicsoScreens.ChatScreen)}
+            onClick = {
+//                viewModel.connectToServer()
+                navController.navigate(AicsoScreens.ChatScreen)}
         )
 
         SmallSpace()
@@ -103,7 +113,9 @@ fun HomeScreen(navController: NavController) {
             iconRes = R.drawable.voice_call,
             title = "Voice Call",
             subtitle = "Speak with AI assistant",
-            onClick = { navController.navigate(AicsoScreens.VoiceScreen) }
+            onClick = {
+//                navController.navigate(AicsoScreens.VoiceScreen)
+            }
         )
 
        SmallSpace()
@@ -114,7 +126,9 @@ fun HomeScreen(navController: NavController) {
             iconRes = R.drawable.showvideo_icon,
             title = "Video Avatar",
             subtitle = "Face-to-face AI experience",
-            onClick = { navController.navigate(AicsoScreens.VideoScreen) }
+            onClick = {
+//                navController.navigate(AicsoScreens.VideoScreen)
+            }
         )
 
         MediumSpace()

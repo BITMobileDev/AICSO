@@ -3,6 +3,7 @@ package com.aicso.ui.components.chatscreencomponent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,6 +50,7 @@ import com.aicso.ui.theme.Dimens.dp50
 import com.aicso.ui.theme.Dimens.dp8
 import com.aicso.ui.theme.Dimens.sp16
 import com.aicso.ui.theme.Dimens.sp20
+import com.aicso.ui.theme.aiBox
 import com.aicso.ui.theme.containerColor
 import com.aicso.ui.theme.primaryColor
 import com.aicso.ui.theme.primaryNormal
@@ -106,7 +108,7 @@ fun ChatBottomAppBar(
                     .weight(1f)
                     .height(dp50)
                     .heightIn(min = dp40, max = dp120)
-                    .background(containerColor, RoundedCornerShape(dp24))
+                    .background(aiBox, RoundedCornerShape(dp24))
                     .border(dp2, primaryColor, RoundedCornerShape(dp24))
                     .padding(horizontal = dp12, vertical = dp2),  // only padding YOU control
 
@@ -131,9 +133,9 @@ fun ChatBottomAppBar(
                 ),
 
                 decorationBox = { innerTextField ->
-                    Row(
+                    Box(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                        contentAlignment = Alignment.CenterStart
                     ) {
                         if (messageText.isEmpty()) {
                             Text(

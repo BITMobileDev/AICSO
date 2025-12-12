@@ -35,7 +35,7 @@ class VideoScreenViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun endVoiceSupport() {
+    fun endVideoSupport() {
         // Get the current duration before stopping
         val currentState = _uiState.value
         val finalDuration = if (currentState is VideoScreenState.ActiveState) {
@@ -65,7 +65,7 @@ class VideoScreenViewModel @Inject constructor() : ViewModel() {
     fun toggleMicrophone() {
         val currentState = _uiState.value
         if (currentState is VideoScreenState.ActiveState) {
-            _uiState.value = currentState.copy(isMuted = !currentState.isMuted)
+            _uiState.value = currentState.copy(isRecording = !currentState.isRecording)
         }
     }
 
