@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package ai.cso.voice;
+
+option java_package = "com.aicso.voice";
+option java_multiple_files = true;
+
+service VoiceService {
+    rpc VoiceCall(stream VoiceRequest) returns (stream VoiceResponse);
+}
+
+message VoiceRequest {
+    bytes audio_chunk = 1;
+    int32 sequence = 2;
+    bool is_final = 3;
+}
+
+message VoiceResponse {
+    bytes audio_chunk = 1;
+    string transcript = 2;
+    Intent intent = 3;
+    bool requires_escalation = 4;
+    bool is_final = 5;
+    string interaction_id = 6;
+    int64 latency_ms = 7;
+}
+
+message Intent {
+    string name = 1;
+    float confidence = 2;
+}

@@ -114,7 +114,7 @@ fun HomeScreen(
             title = "Voice Call",
             subtitle = "Speak with AI assistant",
             onClick = {
-//                navController.navigate(AicsoScreens.VoiceScreen)
+                navController.navigate(AicsoScreens.VoiceScreen)
             }
         )
 

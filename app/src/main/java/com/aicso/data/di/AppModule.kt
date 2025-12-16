@@ -8,6 +8,7 @@ import com.aicso.core.util.AiCsoPreference
 import com.aicso.data.api.ChatApiService
 import com.aicso.data.api.VoiceApiService
 import com.aicso.data.signalr.SignalRManager
+import com.aicso.data.voice.VoiceStreamingManager
 //import com.aicso.data.signalr.SignalRService
 import com.aicso.data.websocket.WebSocketManager
 import com.aicso.domain.repository.ChatRepository
@@ -19,6 +20,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import io.grpc.ManagedChannel
+import io.grpc.ManagedChannelBuilder
 import okhttp3.Dns
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -106,8 +109,44 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideVoiceRepository(voiceApiService: VoiceApiService, aiCsoPreference: AiCsoPreference) : VoiceRepository{
-        return VoiceRepositoryImpl(voiceApiService, aiCsoPreference)
+    fun provideManagedChannel(@ApplicationContext context: Context): ManagedChannel {
+        return io.grpc.android.AndroidChannelBuilder
+            .forAddress("aicso-dev-backend-ca.bluegrass-88201ab2.canadacentral.azurecontainerapps.io", 443)
+            .context(context)
+            .useTransportSecurity() // Use TLS since it's an external address
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAudioRecorder(): com.aicso.core.audio.AudioRecorder {
+        return com.aicso.core.audio.AudioRecorder()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAudioPlayer(): com.aicso.core.audio.AudioPlayer {
+        return com.aicso.core.audio.AudioPlayer()
+    }
+
+    @Provides
+    @Singleton
+    fun provideVoiceStreamingManager(
+        audioRecorder: com.aicso.core.audio.AudioRecorder,
+        audioPlayer: com.aicso.core.audio.AudioPlayer,
+        channel: ManagedChannel
+    ): VoiceStreamingManager {
+        return VoiceStreamingManager(audioRecorder, audioPlayer, channel)
+    }
+
+    @Provides
+    @Singleton
+    fun provideVoiceRepository(
+        voiceApiService: VoiceApiService,
+        aiCsoPreference: AiCsoPreference,
+        voiceStreamingManager: VoiceStreamingManager
+    ) : VoiceRepository{
+        return VoiceRepositoryImpl(voiceApiService, aiCsoPreference, voiceStreamingManager)
     }
 
     @Provides

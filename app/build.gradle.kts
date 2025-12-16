@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.protobuf)
 
 
 }
@@ -24,6 +25,50 @@ android {
 
         buildConfigField("String", "BASE_URL", value="\"https://aicso-dev-backend-ca.bluegrass-88201ab2.canadacentral.azurecontainerapps.io/\"")
         buildConfigField("boolean", "DEBUG_LEVEL", value="true")
+
+        // sourceSets {
+        //    getByName("main") {
+        //        proto {
+        //            srcDir("src/main/proto")
+        //        }
+        //    }
+        // }
+
+        protobuf {
+            protoc {
+                artifact = "com.google.protobuf:protoc:${libs.versions.protobufVersion.get()}"
+            }
+
+            plugins {
+                create("grpc") {
+                    artifact = "io.grpc:protoc-gen-grpc-java:${libs.versions.grpcVersion.get()}"
+                }
+                create("grpckt") {
+                    artifact = "io.grpc:protoc-gen-grpc-kotlin:${libs.versions.grpcKotlinVersion.get()}:jdk8@jar"
+                }
+            }
+
+            generateProtoTasks {
+                all().forEach { task ->
+                    task.plugins {
+                        create("grpc") {
+                            option("lite")
+                        }
+                        create("grpckt") {
+                            option("lite")
+                        }
+                    }
+                    task.builtins {
+                        create("java") {
+                            option("lite")
+                        }
+                        create("kotlin") {
+                            option("lite")
+                        }
+                    }
+                }
+            }
+        }
 
 
     }
@@ -120,6 +165,23 @@ dependencies {
     implementation(libs.rxjava)
     implementation(libs.rxandroid)
     implementation(libs.rxkotlin)
+
+    implementation(libs.grpc.okhttp)
+    implementation(libs.grpc.protobuf.lite)
+    implementation(libs.grpc.stub)
+    implementation(libs.grpc.android)
+    implementation(libs.grpc.kotlin.stub)
+
+    // Protobuf
+    implementation(libs.protobuf.javalite)
+    implementation(libs.protobuf.kotlin.lite)
+    // implementation(libs.protobuf.java) // Removed to avoid conflict with javalite
+
+    // Optional: Audio processing for voice calls
+    implementation(libs.exoplayer.core)
+
+    // Annotation
+    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
 
 
 

@@ -66,8 +66,15 @@ fun VoiceScreen(
             ) { state ->
                 when (val state = uiState) {
                     is VoiceScreenState.DefaultState -> {
+                        // Permission handling would ideally go here or in a wrapper
+                        // For simplicity in this step, we keep the direct call but note that 
+                        // RECORD_AUDIO permission is required.
+                        // In a real app, use a Permission launcher here.
                         ReadyStateContent(
-                            onStartCall = { viewModel.startVoiceSupport() }
+                            onStartCall = { 
+                                // TODO: Add Runtime Permission Request for RECORD_AUDIO here
+                                viewModel.startVoiceSupport() 
+                            }
                         )
                     }
                     is VoiceScreenState.ConnectingState -> {

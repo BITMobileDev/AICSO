@@ -2,6 +2,8 @@ package com.aicso.ui.view.voicescreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aicso.core.util.AiCsoPreference
+import com.aicso.domain.repository.VoiceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -13,7 +15,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class VoiceScreenViewModel @Inject constructor() : ViewModel() {
+class VoiceScreenViewModel @Inject constructor(
+    private val voiceRepository: VoiceRepository,
+    private val aiCsoPreference: AiCsoPreference
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<VoiceScreenState>(VoiceScreenState.DefaultState)
     val uiState: StateFlow<VoiceScreenState> = _uiState.asStateFlow()
@@ -27,7 +32,19 @@ class VoiceScreenViewModel @Inject constructor() : ViewModel() {
             stopTimer()
 
             _uiState.value = VoiceScreenState.ConnectingState
-            delay(2500)
+            
+            // Start the actual voice call
+            val sessionId = aiCsoPreference.getSessionId()
+            if (sessionId != null) {
+                try {
+                    voiceRepository.startVoiceCall(sessionId)
+                } catch (e: Exception) {
+                    // Handle error, maybe go back to default or show error
+                    e.printStackTrace()
+                }
+            }
+            
+            delay(2500) // Keep the UI feedback for connection
 
             secondsElapsed = 0 // Reset timer
             _uiState.value = VoiceScreenState.ActiveState()
@@ -36,6 +53,9 @@ class VoiceScreenViewModel @Inject constructor() : ViewModel() {
     }
 
     fun endVoiceSupport() {
+        // Stop the voice call
+        voiceRepository.stopVoiceCall()
+        
         // Get the current duration before stopping
         val currentState = _uiState.value
         val finalDuration = if (currentState is VoiceScreenState.ActiveState) {
@@ -58,6 +78,7 @@ class VoiceScreenViewModel @Inject constructor() : ViewModel() {
 
     fun resetToDefault() {
         stopTimer()
+        voiceRepository.stopVoiceCall()
         secondsElapsed = 0
         _uiState.value = VoiceScreenState.DefaultState
     }
@@ -66,6 +87,7 @@ class VoiceScreenViewModel @Inject constructor() : ViewModel() {
         val currentState = _uiState.value
         if (currentState is VoiceScreenState.ActiveState) {
             _uiState.value = currentState.copy(isRecording = !currentState.isRecording)
+            // TODO: Mute logic in repository/manager if needed
         }
     }
 
@@ -73,6 +95,7 @@ class VoiceScreenViewModel @Inject constructor() : ViewModel() {
         val currentState = _uiState.value
         if (currentState is VoiceScreenState.ActiveState){
             _uiState.value = currentState.copy(isSpeaker = !currentState.isSpeaker)
+             // TODO: Speaker toggle logic in repository/manager if needed
         }
     }
 
@@ -109,5 +132,6 @@ class VoiceScreenViewModel @Inject constructor() : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         stopTimer()
+        voiceRepository.stopVoiceCall()
     }
 }

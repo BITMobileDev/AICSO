@@ -102,7 +102,6 @@ fun ChatScreen(
                 isLoading = isLoading,
                 modifier = Modifier.weight(1f)
             )
-
 //            QuickActionBox(onActionClick = { /* Handle quick action click*/ })
         }
     }

@@ -29,6 +29,13 @@ rxjava = "3.1.8"
 rxandroid = "3.0.2"
 rxkotlin = "3.0.1"
 
+# New versions for gRPC setup
+grpcVersion = "1.68.0"
+protobufVersion = "4.29.3"
+protobufGradlePlugin = "0.9.5"
+grpcKotlinVersion = "1.4.1"
+protobufLite = "3.25.3"
+
 
 
 
@@ -78,6 +85,21 @@ rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxjav
 rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rxandroid" }
 rxkotlin = { group = "io.reactivex.rxjava3", name = "rxkotlin", version.ref = "rxkotlin" }
 
+grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp", version.ref = "grpcVersion" }
+grpc-protobuf-lite = { group = "io.grpc", name = "grpc-protobuf-lite", version.ref = "grpcVersion" }
+grpc-stub = { group = "io.grpc", name = "grpc-stub", version.ref = "grpcVersion" }
+grpc-android = { group = "io.grpc", name = "grpc-android", version.ref = "grpcVersion" }
+grpc-kotlin-stub = { group = "io.grpc", name = "grpc-kotlin-stub", version.ref = "grpcKotlinVersion"}
+
+protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "protobufLite" }
+protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobufLite" }
+protobuf-java = { group = "com.google.protobuf", name = "protobuf-java", version.ref = "protobufVersion" }
+protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobufVersion" }
+protoc-gen-grpc-java = { group = "io.grpc", name = "protoc-gen-grpc-java", version.ref = "grpcVersion" }
+
+# Audio Processing (Optional but recommended for voice calls)
+exoplayer-core = { group = "com.google.android.exoplayer", name = "exoplayer-core", version = "2.19.1" }
+
 
 
 
@@ -88,5 +110,6 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 hilt = { id= "com.google.dagger.hilt.android", version.ref = "hiltVersion"}
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+protobuf = { id = "com.google.protobuf", version.ref = "protobufGradlePlugin" }
 
 
