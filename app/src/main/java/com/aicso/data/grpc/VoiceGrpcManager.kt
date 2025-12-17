@@ -38,7 +38,7 @@ class VoiceGrpcManager @Inject constructor() {
 
 
     private fun getGrpcHost(): String {
-        return BuildConfig.BASE_URL
+        return SERVER_URL
             .removePrefix("https://")
             .removePrefix("http://")
             .removeSuffix("/")

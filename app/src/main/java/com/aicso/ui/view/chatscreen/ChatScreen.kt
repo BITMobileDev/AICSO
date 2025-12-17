@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.aicso.R
 import com.aicso.ui.theme.grayBlack
@@ -52,7 +53,7 @@ fun ChatScreen(
                         else -> R.drawable.chatbot_offline
                     },
                     description = "Chatbot",
-                    name = "Alex",
+                    name = stringResource(R.string.ai_name),
                     status = when (connectionStatus) {
                         ConnectionStatus.Connected -> "Online"
                         ConnectionStatus.Connecting -> "Connecting..."
@@ -95,7 +96,9 @@ fun ChatScreen(
         },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { Padding ->
-        Column(modifier.padding(Padding).background(color = Color.White)) {
+        Column(modifier
+            .padding(Padding)
+            .background(color = Color.White)) {
             // Messages List
             MessagesList(
                 messages = messages,

@@ -40,6 +40,8 @@ class ChatRepositoryImpl @Inject constructor(
     override suspend fun createChatSession(): Result<String> {
         return try {
             val response = chatApiService.createChatSession()
+            Log.d(TAG, "Response Code: ${response.code()}")
+
             if (response.isSuccessful) {
                 val apiResponse = response.body()
                 if (apiResponse?.success == true) {

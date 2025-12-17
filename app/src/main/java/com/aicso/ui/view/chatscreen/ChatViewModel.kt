@@ -53,7 +53,7 @@ class ChatViewModel @Inject constructor(
         // Absolutely minimal initialization - just set initial UI state
         _messages.value = listOf(
             ChatResponse(
-                message = "Hello! I'm Alex, your AI-CSO assistant. How can I help you today?",
+                message = "Hello! I'm Lana, your AI-CSO assistant. How can I help you today?",
                 isFromUser = false
             )
         )
@@ -204,6 +204,7 @@ class ChatViewModel @Inject constructor(
                 val hubUrl = baseUrl
                     .removeSuffix("/")
                     .replace("/api", "") + "/hubs/chat"
+
 
                 Log.d(TAG, "=== Connecting to SignalR Hub ===")
                 Log.d(TAG, "Base URL: $baseUrl")
