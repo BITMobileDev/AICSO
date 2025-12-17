@@ -28,6 +28,18 @@ signalrVersion = "8.0.0"
 rxjava = "3.1.8"
 rxandroid = "3.0.2"
 rxkotlin = "3.0.1"
+#grpcVersion = "1.3.0"
+#grpcProtobufVersion = "1.57.2"
+#protobufKotlinVersion = "3.24.0"
+#protobufVersion = "0.9.4"
+
+grpc = "1.70.0"
+grpcKotlin = "1.4.1"
+protobuf = "4.29.2"
+protobufPlugin = "0.9.4"
+protobufLite = "1.57.2"
+
+
 
 
 
@@ -78,7 +90,23 @@ rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxjav
 rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rxandroid" }
 rxkotlin = { group = "io.reactivex.rxjava3", name = "rxkotlin", version.ref = "rxkotlin" }
 
+#grpc
+#grpc = {group = "io.grpc", name = "grpc-kotlin-stub", version = "grpcVersion"}
+#grpc-protobuf = {group = "io.grpc", name = "grpc-protobuf", version = "grpcProtobufVersion"}
+#grpc-okhttp = {group = "io.grpc", name = "grpc-okhttp", version = "grpcProtobufVersion"}
+#kotlin-protobuf = {group = "com.google.protobuf", name = "protobuf-kotlin", version = "protobufKotlinVersion"}
+#
 
+grpc-kotlin-stub = { group = "io.grpc", name = "grpc-kotlin-stub", version.ref = "grpcKotlin" }
+#grpc-protobuf = { group = "io.grpc", name = "grpc-protobuf", version.ref = "grpc" }
+grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp", version.ref = "grpc" }
+grpc-stub = { group = "io.grpc", name = "grpc-stub", version.ref = "grpc" }
+protobuf-kotlin = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
+protobuf-java = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "protobuf" }
+protobuf-lite = {group = "io.grpc", name = "grpc-protobuf-lite", version.ref = "protobufLite"}
+
+# For Java/JVM projects, you might also need:
+javax-annotation = { group = "javax.annotation", name = "javax.annotation-api", version = "1.3.2" }
 
 
 [plugins]
@@ -88,5 +116,8 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 hilt = { id= "com.google.dagger.hilt.android", version.ref = "hiltVersion"}
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+#protobuf-kotlin = { id = "com.google.protobuf", version.ref = "protobufVersion"}
+
+protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 
 

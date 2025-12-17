@@ -39,11 +39,13 @@ import com.aicso.ui.theme.Dimens.dp160
 import com.aicso.ui.theme.Dimens.dp20
 import com.aicso.ui.theme.Dimens.dp28
 import com.aicso.ui.theme.Dimens.dp60
+import com.aicso.ui.theme.Dimens.dp8
 import com.aicso.ui.theme.Dimens.sp14
 import com.aicso.ui.theme.Dimens.sp16
 import com.aicso.ui.theme.Dimens.sp18
 import com.aicso.ui.theme.Dimens.sp2
 import com.aicso.ui.theme.Dimens.sp22
+import com.aicso.ui.theme.Dimens.sp24
 import com.aicso.ui.theme.Dimens.sp28
 import com.aicso.ui.view.chatscreen.ChatViewModel
 //import com.aicso.ui.view.chatscreen.ChatViewModel
@@ -114,7 +116,7 @@ fun HomeScreen(
             title = "Voice Call",
             subtitle = "Speak with AI assistant",
             onClick = {
-//                navController.navigate(AicsoScreens.VoiceScreen)
+                navController.navigate(AicsoScreens.VoiceScreen)
             }
         )
 
@@ -127,7 +129,7 @@ fun HomeScreen(
             title = "Video Avatar",
             subtitle = "Face-to-face AI experience",
             onClick = {
-//                navController.navigate(AicsoScreens.VideoScreen)
+                navController.navigate(AicsoScreens.VideoScreen)
             }
         )
 
@@ -176,10 +178,11 @@ fun AIAssistantBanner() {
                         modifier = Modifier.size(dp28)
                     )
                     Text(
-                        text = " AI-CSO Assistant",
-                        fontSize = sp14,
+                        text = " Alex",
+                        fontSize = sp24,
                         fontWeight = FontWeight.Medium,
-                        color = Color.White
+                        color = Color.White,
+                        modifier = Modifier.padding(start = dp8)
                     )
                 }
 

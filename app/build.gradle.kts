@@ -5,8 +5,42 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.kapt)
+    alias { libs.plugins.protobuf }
 
+}
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.24.0"
+    }
+    plugins {
+        create("grpc") {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.57.2"
+        }
+        create("grpckt") {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:1.3.0:jdk8@jar"
+        }
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.plugins {
+                create("grpc") {
+                    option("lite")
+                }
+                create("grpckt") {
+                    option("lite")
+                }
+            }
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+                create("kotlin") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }
 
 android {
@@ -121,6 +155,20 @@ dependencies {
     implementation(libs.rxandroid)
     implementation(libs.rxkotlin)
 
+    //grpc
+//    implementation(libs.grpc)
+//    implementation(libs.grpc_protobuf)
+//    implementation(libs.grpc_okhttp)
+//    implementation(libs.kotlin_protobuf)
+
+    implementation(libs.grpc.kotlin.stub)
+//    implementation(libs.grpc.protobuf)
+    implementation(libs.grpc.okhttp)
+    implementation(libs.grpc.stub)
+    implementation(libs.protobuf.kotlin)
+    implementation(libs.protobuf.java)
+    implementation(libs.javax.annotation)
+    implementation(libs.protobuf.lite)
 
 
 

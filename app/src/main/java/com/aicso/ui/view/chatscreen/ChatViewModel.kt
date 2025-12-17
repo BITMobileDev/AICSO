@@ -53,7 +53,7 @@ class ChatViewModel @Inject constructor(
         // Absolutely minimal initialization - just set initial UI state
         _messages.value = listOf(
             ChatResponse(
-                message = "Hello! I'm your AI-CSO assistant. How can I help you today?",
+                message = "Hello! I'm Alex, your AI-CSO assistant. How can I help you today?",
                 isFromUser = false
             )
         )

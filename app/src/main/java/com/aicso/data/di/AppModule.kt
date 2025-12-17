@@ -7,11 +7,17 @@ import com.aicso.core.domain.VoiceRepositoryImpl
 import com.aicso.core.util.AiCsoPreference
 import com.aicso.data.api.ChatApiService
 import com.aicso.data.api.VoiceApiService
+import com.aicso.data.audio.VoiceAudioPlayer
+import com.aicso.data.audio.VoiceAudioRecorder
+import com.aicso.data.grpc.VoiceGrpcManager
 import com.aicso.data.signalr.SignalRManager
-//import com.aicso.data.signalr.SignalRService
 import com.aicso.data.websocket.WebSocketManager
 import com.aicso.domain.repository.ChatRepository
 import com.aicso.domain.repository.VoiceRepository
+import com.aicso.domain.usecase.CreateVoiceSessionUseCase
+import com.aicso.domain.usecase.EndVoiceSessionUseCase
+import com.aicso.domain.usecase.StartVoiceCallUseCase
+import com.aicso.domain.usecase.StopVoiceCallUseCase
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -103,16 +109,69 @@ object AppModule {
     }
 
 
-
-    @Provides
-    @Singleton
-    fun provideVoiceRepository(voiceApiService: VoiceApiService, aiCsoPreference: AiCsoPreference) : VoiceRepository{
-        return VoiceRepositoryImpl(voiceApiService, aiCsoPreference)
-    }
-
     @Provides
     @Singleton
     fun provideSignalRManager(gson: Gson, client: OkHttpClient): SignalRManager {
         return SignalRManager(gson)
     }
+    @Provides
+    @Singleton
+    fun provideVoiceGrpcManager(): VoiceGrpcManager {
+        return VoiceGrpcManager()
+    }
+
+    @Provides
+    @Singleton
+    fun provideVoiceAudioRecorder(): VoiceAudioRecorder {
+        return VoiceAudioRecorder()
+    }
+
+    @Provides
+    @Singleton
+    fun provideVoiceAudioPlayer(@ApplicationContext context: Context): VoiceAudioPlayer {
+        return VoiceAudioPlayer(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideVoiceRepository(
+        voiceApiService: VoiceApiService,
+        grpcManager: VoiceGrpcManager,
+        audioRecorder: VoiceAudioRecorder,
+        audioPlayer: VoiceAudioPlayer,
+    ): VoiceRepository {
+        return VoiceRepositoryImpl(voiceApiService,grpcManager, audioRecorder, audioPlayer)
+    }
+
+
+
+
+//    @Provides
+//    fun provideCreateVoiceSessionUseCase(
+//        repository: VoiceRepository
+//    ): CreateVoiceSessionUseCase {
+//        return CreateVoiceSessionUseCase(repository)
+//    }
+//
+//    @Provides
+//    fun provideStartVoiceCallUseCase(
+//        repository: VoiceRepository
+//    ): StartVoiceCallUseCase {
+//        return StartVoiceCallUseCase(repository)
+//    }
+//
+//    @Provides
+//    fun provideEndVoiceSessionUseCase(
+//        repository: VoiceRepository
+//    ): EndVoiceSessionUseCase {
+//        return EndVoiceSessionUseCase(repository)
+//    }
+//
+//    @Provides
+//    fun provideStopVoiceCallUseCase(
+//        repository: VoiceRepository
+//    ): StopVoiceCallUseCase {
+//        return StopVoiceCallUseCase(repository)
+//    }
+
 }

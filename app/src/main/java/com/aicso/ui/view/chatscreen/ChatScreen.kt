@@ -52,7 +52,7 @@ fun ChatScreen(
                         else -> R.drawable.chatbot_offline
                     },
                     description = "Chatbot",
-                    name = "AI-CSO Assistant",
+                    name = "Alex",
                     status = when (connectionStatus) {
                         ConnectionStatus.Connected -> "Online"
                         ConnectionStatus.Connecting -> "Connecting..."
