@@ -107,14 +107,36 @@ object AppModule {
 
 
 
+//    @Provides
+//    @Singleton
+//    fun provideManagedChannel(@ApplicationContext context: Context): ManagedChannel {
+//        return io.grpc.android.AndroidChannelBuilder
+//            .forAddress("http://localhost:5055/", 443)
+////            .forAddress("aicso-dev-backend-ca.bluegrass-88201ab2.canadacentral.azurecontainerapps.io", 443)
+//            .context(context)
+//            .useTransportSecurity() // Use TLS since it's an external address
+//            .build()
+//    }
+
     @Provides
     @Singleton
     fun provideManagedChannel(@ApplicationContext context: Context): ManagedChannel {
+        // LOCAL DEVELOPMENT - Use 10.0.2.2 for Android Emulator
         return io.grpc.android.AndroidChannelBuilder
-            .forAddress("aicso-dev-backend-ca.bluegrass-88201ab2.canadacentral.azurecontainerapps.io", 443)
+            .forAddress("10.0.2.2", 7160)
             .context(context)
-            .useTransportSecurity() // Use TLS since it's an external address
+            .usePlaintext()  // No TLS for local development
+            .keepAliveTime(30, TimeUnit.SECONDS)
+            .keepAliveTimeout(10, TimeUnit.SECONDS)
+            .keepAliveWithoutCalls(true)
             .build()
+
+        // Production config (commented out for local dev):
+        // return io.grpc.android.AndroidChannelBuilder
+        //     .forAddress("aicso-dev-backend-ca.bluegrass-88201ab2.canadacentral.azurecontainerapps.io", 443)
+        //     .context(context)
+        //     .useTransportSecurity()
+        //     .build()
     }
 
     @Provides

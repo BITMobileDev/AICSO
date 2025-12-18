@@ -26,6 +26,16 @@ class VoiceScreenViewModel @Inject constructor(
     private var timerJob: Job? = null
     private var secondsElapsed = 0
 
+    init {
+        // Set up callbacks for escalation and errors
+        voiceRepository.setEscalationCallback {
+            handleEscalation()
+        }
+        voiceRepository.setErrorCallback { errorMessage ->
+            handleError(errorMessage)
+        }
+    }
+
     fun startVoiceSupport() {
         viewModelScope.launch {
             // Stop any existing timer first
@@ -35,13 +45,23 @@ class VoiceScreenViewModel @Inject constructor(
             
             // Start the actual voice call
             val sessionId = aiCsoPreference.getSessionId()
+
             if (sessionId != null) {
                 try {
                     voiceRepository.startVoiceCall(sessionId)
                 } catch (e: Exception) {
-                    // Handle error, maybe go back to default or show error
+                    // Handle error and show error state
                     e.printStackTrace()
+                    _uiState.value = VoiceScreenState.ErrorState(
+                        message = e.message ?: "Failed to start voice call"
+                    )
+                    return@launch
                 }
+            } else {
+                _uiState.value = VoiceScreenState.ErrorState(
+                    message = "No session ID available"
+                )
+                return@launch
             }
             
             delay(2500) // Keep the UI feedback for connection
@@ -127,6 +147,33 @@ class VoiceScreenViewModel @Inject constructor(
     private fun stopTimer() {
         timerJob?.cancel()
         timerJob = null
+    }
+
+    private fun handleEscalation() {
+        // Stop the voice call and timer
+        stopTimer()
+        voiceRepository.stopVoiceCall()
+        
+        // Get the current duration before transitioning
+        val currentState = _uiState.value
+        val finalDuration = if (currentState is VoiceScreenState.ActiveState) {
+            currentState.duration
+        } else {
+            "00:00"
+        }
+        
+        // Transition to ended state with escalation message
+        // Note: You may want to create a separate EscalationState if needed
+        _uiState.value = VoiceScreenState.EndedState(duration = finalDuration)
+    }
+
+    private fun handleError(errorMessage: String) {
+        // Stop the timer and call
+        stopTimer()
+        voiceRepository.stopVoiceCall()
+        
+        // Show error state
+        _uiState.value = VoiceScreenState.ErrorState(message = errorMessage)
     }
 
     override fun onCleared() {

@@ -97,6 +97,13 @@ fun VoiceScreen(
                             onClose = { viewModel.resetToDefault() }
                         )
                     }
+                    is VoiceScreenState.ErrorState -> {
+                        ErrorStateContent(
+                            errorMessage = state.message,
+                            onRetry = { viewModel.startVoiceSupport() },
+                            onClose = { viewModel.resetToDefault() }
+                        )
+                    }
                 }
             }
         }

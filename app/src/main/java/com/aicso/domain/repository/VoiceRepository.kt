@@ -6,4 +6,6 @@ interface VoiceRepository {
     fun startVoiceCall(sessionId: String)
     fun stopVoiceCall()
     fun isCallActive(): Boolean
+    fun setEscalationCallback(callback: () -> Unit)
+    fun setErrorCallback(callback: (String) -> Unit)
 }

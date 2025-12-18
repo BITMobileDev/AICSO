@@ -26,4 +26,12 @@ class VoiceRepositoryImpl @Inject constructor(
         // We might want to add an isActive property to VoiceStreamingManager or track it here.
         return true 
     }
+
+    override fun setEscalationCallback(callback: () -> Unit) {
+        voiceStreamingManager.setEscalationCallback(callback)
+    }
+
+    override fun setErrorCallback(callback: (String) -> Unit) {
+        voiceStreamingManager.setErrorCallback(callback)
+    }
 }

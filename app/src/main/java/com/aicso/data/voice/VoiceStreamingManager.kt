@@ -26,12 +26,22 @@ class VoiceStreamingManager @Inject constructor(
 ) {
 
     private var streamingJob: Job? = null
+    private var onEscalationCallback: (() -> Unit)? = null
+    private var onErrorCallback: ((String) -> Unit)? = null
 
     // We don't create the stub lazily anymore because we need to attach the interceptor 
     // which depends on the sessionId provided at start.
     // Or we can create a base stub and attach interceptor later.
     private val baseStub by lazy {
         VoiceServiceGrpcKt.VoiceServiceCoroutineStub(grpcChannel)
+    }
+
+    fun setEscalationCallback(callback: () -> Unit) {
+        onEscalationCallback = callback
+    }
+
+    fun setErrorCallback(callback: (String) -> Unit) {
+        onErrorCallback = callback
     }
 
     fun startStreaming(sessionId: String) {
@@ -61,8 +71,10 @@ class VoiceStreamingManager @Inject constructor(
                 stub.voiceCall(outputFlow)
                     .catch { e ->
                         Log.e(TAG, "Error in voice stream", e)
+                        onErrorCallback?.invoke(e.message ?: "Unknown streaming error")
                     }
                     .collect { response ->
+                        Log.d(TAG, "📥 Received response - Interaction ID: ${response.interactionId}")
                         // Handle incoming audio (gRPC -> Speaker)
                         // Note: field is audio_chunk now, not processed_audio
                         val audioBytes = response.audioChunk.toByteArray()
@@ -82,17 +94,21 @@ class VoiceStreamingManager @Inject constructor(
 
                         // Handle Escalation
                         if (response.requiresEscalation) {
-                            Log.w(TAG, "Escalation required (Not implemented in UI yet)")
+                            Log.w(TAG, "🆘 Escalation required - switching to human agent")
+                            onEscalationCallback?.invoke()
+                            stopStreaming()
+                            return@collect
                         }
                         
                         if (response.isFinal) {
-                            Log.d(TAG, "Server signaled end of stream")
+                            Log.d(TAG, "✅ Interaction complete - Latency: ${response.latencyMs}ms")
                             stopStreaming()
                         }
                     }
 
             } catch (e: Exception) {
                 Log.e(TAG, "Exception in voice streaming manager", e)
+                onErrorCallback?.invoke(e.message ?: "Voice call failed")
             }
         }
     }

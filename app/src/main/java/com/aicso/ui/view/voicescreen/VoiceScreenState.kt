@@ -17,5 +17,6 @@ sealed class VoiceScreenState {
         val duration: String
     ) : VoiceScreenState()
 
-}
+    data class ErrorState(val message: String) : VoiceScreenState()
 
+}

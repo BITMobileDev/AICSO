@@ -31,7 +31,7 @@ class AudioRecorder @Inject constructor() {
         val buffer = ByteArray(minBufferSize) // Send smaller chunks for lower latency
 
         val audioRecord = AudioRecord(
-            MediaRecorder.AudioSource.MIC,
+            MediaRecorder.AudioSource.VOICE_COMMUNICATION,
             SAMPLE_RATE,
             CHANNEL_CONFIG,
             AUDIO_FORMAT,
